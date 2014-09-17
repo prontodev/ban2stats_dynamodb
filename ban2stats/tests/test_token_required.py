@@ -23,3 +23,7 @@ class TestTokenRequired(SimpleTestCase):
         response = function_for_testing(request, 'echome')
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.content, 'Token is required.')
+
+    def test_client_fail(self):
+        response = self.client.get('/')
+        self.assertEqual(response.content, 'Token is required.')
