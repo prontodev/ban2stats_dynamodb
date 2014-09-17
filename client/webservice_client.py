@@ -9,15 +9,20 @@ class BAN2STATSHandler(object):
 
     WEBSERVICE_HOST = 'http://localhost:8000'
     BAN2STATS_HANDLER_URL = '/'
+    TOKEN = 'Banana'
 
     def api_url(self):
         return urljoin(self.WEBSERVICE_HOST, self.BAN2STATS_HANDLER_URL)
 
+    def api_headers(self):
+        headers = {'Content-type': 'application/x-www-form-urlencoded',
+                   'Token': self.TOKEN}
+        return headers
+
     def call_webservice_api(self, url, content_data_as_dict):
         http = Http()
-        headers = {'Content-type': 'application/x-www-form-urlencoded'}
         body = urlencode(content_data_as_dict)
-        response, content = http.request(url, "POST", headers=headers, body=body)
+        response, content = http.request(url, "POST", headers=self.api_headers(), body=body)
         return response, content
 
     def call_ban_handler(self, ban2stats_data):

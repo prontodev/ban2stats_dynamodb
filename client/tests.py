@@ -11,6 +11,10 @@ class ClientTest(TestCase):
         handler.BAN2STATS_HANDLER_URL = "/test_handler_url/"
         self.assertEqual(handler.api_url(), 'http://WebService_HOST:8000/test_handler_url/')
 
+    def test_api_headers(self):
+        handler = BAN2STATSHandler()
+        self.assertEqual(handler.api_headers()['Token'], 'Banana')
+
     @mock.patch('httplib2.Http.request')
     def test_call_webservice_api(self, mock_http):
         mock_http.return_value = (200, 'ACK from Webservice')
