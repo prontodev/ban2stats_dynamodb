@@ -13,17 +13,24 @@ class TestTokenRequired(SimpleTestCase):
 
     def test_token_success(self):
         request = HttpRequest()
-        request.META = {'HTTP_TOKEN': 'Banana'}
+        request.META = {'HTTP_TOKEN': 'oTbCmV71i2Lg5wQMSsPEFKGJ0Banana'}
         result = function_for_testing(request, 'echome')
         self.assertEqual(result, 'echome')
 
-    def test_token_fail(self):
+    def test_token_fail__required(self):
         request = HttpRequest()
         request.META = {}
         response = function_for_testing(request, 'echome')
         self.assertEqual(response.status_code, 400)
-        self.assertEqual(response.content, 'Token is required.')
+        self.assertEqual(response.content, 'Token is required/mismatched.')
+
+    def test_token_fail__mismatched(self):
+        request = HttpRequest()
+        request.META = {'HTTP_TOKEN': 'Banana'}
+        response = function_for_testing(request, 'echome')
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.content, 'Token is required/mismatched.')
 
     def test_client_fail(self):
         response = self.client.get('/')
-        self.assertEqual(response.content, 'Token is required.')
+        self.assertEqual(response.content, 'Token is required/mismatched.')

@@ -85,3 +85,5 @@ STATIC_URL = '/static/'
 
 #GEO IP Settings
 GEOIP_PATH = os.path.join(BASE_DIR, 'geo_data')
+
+BAN2STATS_SERVICE_TOKEN = 'oTbCmV71i2Lg5wQMSsPEFKGJ0Banana'
