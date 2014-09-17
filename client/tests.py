@@ -15,6 +15,6 @@ class ClientTest(TestCase):
     def test_call_webservice_api(self, mock_http):
         mock_http.return_value = (200, 'ACK from Webservice')
         handler = BAN2STATSHandler()
-        response_code, response_content = handler.call_webservice_api()
+        response_code, response_content = handler.call_webservice_api('http://localhost:8000/some_url/', {'data':'data'})
         self.assertEqual(response_code, 200)
         self.assertEqual(response_content, 'ACK from Webservice')

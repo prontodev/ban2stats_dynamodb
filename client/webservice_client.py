@@ -11,10 +11,9 @@ class BAN2STATSHandler(object):
     def api_url(self):
         return urljoin(self.WEBSERVICE_HOST, self.BAN2STATS_HANDLER_URL)
 
-    def call_webservice_api(self):
+    def call_webservice_api(self, url, content_data):
         http = Http()
         headers = {'Content-type': 'application/x-www-form-urlencoded'}
-        data = {}
-        body = urlencode(data)
-        response, content = http.request(self.api_url(), "POST", headers=headers, body=body)
+        body = urlencode(content_data)
+        response, content = http.request(url, "POST", headers=headers, body=body)
         return response, content
