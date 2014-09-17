@@ -11,6 +11,9 @@ class BAN2STATSHandler(object):
     BAN2STATS_HANDLER_URL = '/'
     TOKEN = 'Banana'
 
+    def __init__(self, token):
+        self.token = token
+
     def api_url(self):
         return urljoin(self.WEBSERVICE_HOST, self.BAN2STATS_HANDLER_URL)
 
