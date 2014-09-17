@@ -15,6 +15,15 @@ class ClientTest(TestCase):
     def test_call_webservice_api(self, mock_http):
         mock_http.return_value = (200, 'ACK from Webservice')
         handler = BAN2STATSHandler()
-        response_code, response_content = handler.call_webservice_api('http://localhost:8000/some_url/', {'data':'data'})
+        test_url = 'http://localhost:8000/some_url/'
+        response_code, response_content = handler.call_webservice_api(test_url, {'data': 'data'})
         self.assertEqual(response_code, 200)
         self.assertEqual(response_content, 'ACK from Webservice')
+
+    @mock.patch('httplib2.Http.request')
+    def test_call_ban2stats_handler_api(self, mock_http):
+        mock_http.return_value = (200, 'Saved Ban record.')
+        handler = BAN2STATSHandler()
+        response = handler.call_ban_handler({})
+        self.assertEqual(response[0], 200)
+        self.assertEqual(response[1], 'Saved Ban record.')
