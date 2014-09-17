@@ -3,3 +3,4 @@ httplib2
 
 #Testing
 nose
+mock
