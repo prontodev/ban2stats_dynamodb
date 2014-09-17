@@ -1,7 +1,3 @@
-from django.conf import settings
-from django.shortcuts import render_to_response
-from django.template.context import RequestContext
-from models import RedirectServer
 from httplib2 import Http
 from urllib import urlencode
 from urlparse import urljoin
