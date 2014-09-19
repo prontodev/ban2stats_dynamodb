@@ -20,8 +20,10 @@ class TestAttackRecord(SimpleTestCase):
         attack = FakeAttackRecorder().new_attack()
         self.assertRaisesMessage(ValueError, "Attribute 'attacker_ip' cannot be None", attack.save)
 
-    def test_get_geo_details(self):
+    def test_get_geo_data(self):
         ip = '72.14.207.99'
         attack_recorder = FakeAttackRecorder()
-        geo_details = attack_recorder.get_geo_details(ip=ip)
-        self.assertEqual(geo_details['country_code'], 'US')
+        attack = attack_recorder.new_attack()
+        geo_details = attack_recorder.get_geo_data(ip=ip)
+        self.assertEqual(attack_recorder.attack.country, u'United States')
+        self.assertEqual(attack_recorder.attack.geo_location, '')

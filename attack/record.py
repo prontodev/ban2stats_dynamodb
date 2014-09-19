@@ -1,6 +1,7 @@
 from attack.models import Attack
 from django.contrib.gis.geoip import GeoIP
-
+from django.utils.timezone import get_current_timezone
+from datetime import datetime
 
 class AttackRecorder(object):
 
@@ -15,7 +16,16 @@ class AttackRecorder(object):
         self.attack = self.model()
         return self.attack
 
-    def get_geo_details(self, ip=None):
+    def get_geo_data(self, ip=None):
         geo_ip = GeoIP()
         self.geo_details = geo_ip.city(ip)
-        return self.geo_details
+
+        self.attack.country = self.geo_details['country_name']
+        self.attack.latitude = self.geo_details['latitude']
+        self.attack.longitude = self.geo_details['longitude']
+
+        self.attack.geo_location = geo_ip.region_by_addr(ip)
+
+    def record_timestamp(self):
+        now_timestamp = datetime.now(tz=get_current_timezone())
+        self.attack.timestmap = now_timestamp
