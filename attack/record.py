@@ -20,11 +20,11 @@ class AttackRecorder(object):
         geo_ip = GeoIP()
         self.geo_details = geo_ip.city(ip)
 
-        self.attack.country = self.geo_details['country_name']
+        self.attack.country = self.geo_details['country_code']
         self.attack.latitude = self.geo_details['latitude']
         self.attack.longitude = self.geo_details['longitude']
 
-        self.attack.geo_location = geo_ip.region_by_addr(ip)
+        self.attack.geo_location = ', '.join([self.geo_details['region'], self.geo_details['country_name']])
 
     def record_timestamp(self):
         now_timestamp = datetime.now(tz=get_current_timezone())

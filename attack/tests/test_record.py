@@ -25,5 +25,5 @@ class TestAttackRecord(SimpleTestCase):
         attack_recorder = FakeAttackRecorder()
         attack = attack_recorder.new_attack()
         geo_details = attack_recorder.get_geo_data(ip=ip)
-        self.assertEqual(attack_recorder.attack.country, u'United States')
-        self.assertEqual(attack_recorder.attack.geo_location, '')
+        self.assertEqual(attack_recorder.attack.country, u'US')
+        self.assertEqual(attack_recorder.attack.geo_location, u'CA, United States')
