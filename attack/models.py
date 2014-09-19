@@ -4,11 +4,12 @@ from pynamodb.attributes import UnicodeAttribute, NumberAttribute, UTCDateTimeAt
 
 class Attack(Model):
     class Meta:
+        read_capacity_units = 1
+        write_capacity_units = 1
         table_name = 'Attack'
         host = 'http://localhost:4567'
 
     attacker_ip = UnicodeAttribute(range_key=True)
-    attack_id = NumberAttribute()
 
     service_name = UnicodeAttribute()
     protocol = UnicodeAttribute()
@@ -20,3 +21,4 @@ class Attack(Model):
     country = UnicodeAttribute()
     geo_location = UnicodeAttribute()
     timestmap = UTCDateTimeAttribute(hash_key=True)
+
