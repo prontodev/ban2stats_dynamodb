@@ -16,7 +16,14 @@ class AttackRecorder(object):
         self.attack = self.model()
         return self.attack
 
+    def set_data(self, attacker_ip=None, service_name=None, protocol=None, port=None):
+        self.attack.attacker_ip = attacker_ip
+        self.attack.service_name = service_name
+        self.attack.protocol = protocol
+        self.attack.port = port
+
     def get_geo_data(self, ip=None):
+        if not ip: ip=self.attack.attacker_ip
         geo_ip = GeoIP()
         self.geo_details = geo_ip.city(ip)
 
@@ -29,3 +36,6 @@ class AttackRecorder(object):
     def record_timestamp(self):
         now_timestamp = datetime.now(tz=get_current_timezone())
         self.attack.timestmap = now_timestamp
+
+    def save(self):
+        self.attack.save()
