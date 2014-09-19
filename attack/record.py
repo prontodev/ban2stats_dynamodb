@@ -3,6 +3,7 @@ from django.contrib.gis.geoip import GeoIP
 from django.utils.timezone import get_current_timezone
 from datetime import datetime
 
+
 class AttackRecorder(object):
 
     def __init__(self, model=Attack):
