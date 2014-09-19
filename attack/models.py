@@ -5,7 +5,7 @@ from pynamodb.attributes import UnicodeAttribute, NumberAttribute, UTCDateTimeAt
 class Attack(Model):
     class Meta:
         table_name = 'Attack'
-        host = ''
+        host = 'http://localhost:4567'
 
     attacker_ip = UnicodeAttribute(range_key=True)
     attack_id = NumberAttribute(hash_key=True)
