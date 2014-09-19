@@ -9,11 +9,13 @@ class AttackRecorder(object):
         if not self.model.exists():
             self.model.create_table(wait=True)
 
+        self.geo_details = None
+
     def new_attack(self):
         self.attack = self.model()
         return self.attack
 
-    def get_geo_location(self, ip=None):
+    def get_geo_details(self, ip=None):
         geo_ip = GeoIP()
-        geo_location = geo_ip.city(ip)
-        return geo_location
+        self.geo_details = geo_ip.city(ip)
+        return self.geo_details
