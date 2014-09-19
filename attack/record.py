@@ -1,7 +1,7 @@
 from attack.models import Attack
 
 
-class AttackRecord(object):
+class AttackRecorder(object):
 
     def __init__(self, model=Attack):
         self.model = model
