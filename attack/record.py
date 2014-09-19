@@ -1,4 +1,5 @@
 from attack.models import Attack
+from django.contrib.gis.geoip import GeoIP
 
 
 class AttackRecorder(object):
@@ -11,3 +12,8 @@ class AttackRecorder(object):
     def new_attack(self):
         self.attack = self.model()
         return self.attack
+
+    def get_geo_location(self, ip=None):
+        geo_ip = GeoIP()
+        geo_location = geo_ip.city(ip)
+        return geo_location
