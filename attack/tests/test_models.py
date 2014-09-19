@@ -2,14 +2,25 @@ from django.test import SimpleTestCase
 from attack.models import Attack
 from django.utils.timezone import get_current_timezone
 from datetime import datetime
+
+
+class AttackForTesting(Attack):
+
+    class Meta:
+        read_capacity_units = 1
+        write_capacity_units = 1
+        table_name = 'AttackTest'
+        host = 'http://localhost:4567'
+
+
 class TestModel(SimpleTestCase):
 
     def test_simple_model_usage(self):
         now_timestamp = datetime.now(tz=get_current_timezone())
 
-        Attack.create_table(wait=True)
+        AttackForTesting.create_table(wait=True)
 
-        attack = Attack(attacker_ip='127.0.0.1',
+        attack = AttackForTesting(attacker_ip='127.0.0.1',
                         service_name='company web server',
                         protocol='http',
                         port='80',
@@ -21,6 +32,4 @@ class TestModel(SimpleTestCase):
                         timestmap=now_timestamp)
         attack.save()
 
-        # self.assertEqual(Attack.batch_get('127.0.0.1').get('ItemCount'), 1)
-
-        Attack.delete_table()
+        AttackForTesting.delete_table()
