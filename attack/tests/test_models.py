@@ -27,7 +27,7 @@ class TestModel(SimpleTestCase):
 
                         longitude='111.333333',
                         latitude='222.33333',
-                        country='Thailand',
+                        country='TH',
                         geo_location='Bangkok, Thailand',
                         timestmap=now_timestamp)
         attack.save()
