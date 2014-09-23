@@ -1,4 +1,4 @@
-from attack.record import AttackRecorder
+from attack.recorder import AttackRecorder
 from attack.tests.test_models import AttackForTesting
 from django.test import SimpleTestCase
 
