@@ -9,7 +9,7 @@ class Attack(Model):
         table_name = 'Attack'
         host = 'http://localhost:4567'
 
-    attacker_ip = UnicodeAttribute(range_key=True)
+    attacker_ip = UnicodeAttribute(hash_key=True)
 
     service_name = UnicodeAttribute()
     protocol = UnicodeAttribute()
@@ -20,5 +20,5 @@ class Attack(Model):
     latitude = UnicodeAttribute()
     country = UnicodeAttribute()
     geo_location = UnicodeAttribute()
-    timestmap = UTCDateTimeAttribute(hash_key=True)
+    timestamp = UTCDateTimeAttribute(range_key=True)
 

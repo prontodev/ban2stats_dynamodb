@@ -12,36 +12,29 @@ class FakeAttackRecorder(AttackRecorder):
 class TestAttackRecord(SimpleTestCase):
 
     def tearDown(self):
-        AttackForTesting.delete_table()
+        self.attack_recorder.delete_table
 
-    def test_init(self):
-        attack_recorder = FakeAttackRecorder()
+    def setUp(self):
+        self.attack_recorder = AttackRecorder(model=AttackForTesting)
 
-    def test_get_new_attack(self):
-
-        attack = FakeAttackRecorder().new_attack()
-        self.assertRaisesMessage(ValueError, "Attribute 'attacker_ip' cannot be None", attack.save)
 
     def test_get_geo_data(self):
         ip = '72.14.207.99'
-        attack_recorder = FakeAttackRecorder()
-        attack = attack_recorder.new_attack()
-        geo_details = attack_recorder.get_geo_data(ip=ip)
-        self.assertEqual(attack_recorder.attack.country, u'US')
-        self.assertEqual(attack_recorder.attack.geo_location, u'CA, United States')
+        geo_details = self.attack_recorder.get_geo_data(ip=ip)
+        self.assertEqual(self.attack_recorder.data['country'], u'US')
+        self.assertEqual(self.attack_recorder.data['geo_location'], u'CA, United States')
 
     def test_record_timestamp(self):
-        attack_recorder = FakeAttackRecorder()
-        attack = attack_recorder.new_attack()
-        attack_recorder.record_timestamp()
-        self.assertTrue(attack_recorder.attack.timestmap)
+        self.attack_recorder.record_timestamp()
+        self.assertTrue(self.attack_recorder.data['timestamp'])
 
     def test_record_save(self):
-        attack_recorder = FakeAttackRecorder()
-        attack = attack_recorder.new_attack()
-        attack_recorder.set_data(attacker_ip='72.14.207.99',
+        self.attack_recorder.set_data(attacker_ip='72.14.207.99',
                         service_name='company web server',
                         protocol='http',
                         port='80',)
-        geo_details = attack_recorder.get_geo_data()
-        attack_recorder.record_timestamp()
+        geo_details = self.attack_recorder.get_geo_data()
+        self.attack_recorder.record_timestamp()
+        self.attack_recorder.save()
+
+        attack_from_db = self.attack_recorder.model.query('72.14.207.99', timestamp=geo_details)

@@ -2,6 +2,7 @@ from django.test import SimpleTestCase
 from attack.models import Attack
 from django.utils.timezone import get_current_timezone
 from datetime import datetime
+import time
 
 
 class AttackForTesting(Attack):
@@ -14,6 +15,9 @@ class AttackForTesting(Attack):
 
 
 class TestModel(SimpleTestCase):
+
+    def tearDown(self):
+        time.sleep(1)
 
     def test_simple_model_usage(self):
         now_timestamp = datetime.now(tz=get_current_timezone())
@@ -29,7 +33,12 @@ class TestModel(SimpleTestCase):
                         latitude='222.33333',
                         country='TH',
                         geo_location='Bangkok, Thailand',
-                        timestmap=now_timestamp)
+                        timestamp=now_timestamp)
         attack.save()
+        AttackForTesting.delete_table()
 
+    def test_save_attack_fail(self):
+        AttackForTesting.create_table(wait=True)
+        attack = AttackForTesting()
+        self.assertRaisesMessage(ValueError, "Attribute 'attacker_ip' cannot be None", attack.save)
         AttackForTesting.delete_table()
