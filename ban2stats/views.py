@@ -11,7 +11,3 @@ def token_required(function):
         return HttpResponseBadRequest("Token is required/mismatched.")
     return inner
 
-
-@token_required
-def home(request):
-    return HttpResponse(request.META['HTTP_TOKEN'])

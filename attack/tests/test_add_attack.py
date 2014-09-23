@@ -15,6 +15,8 @@ class TestAttackAdd(SimpleTestCase):
             time.sleep(1)
         Attack.create_table(wait=True)
 
+        self.request_headers = {'HTTP_TOKEN': 'oTbCmV71i2Lg5wQMSsPEFKGJ0Banana'}
+
     def test_add(self):
         fail2ban_data = dict(
             attacker_ip='72.14.207.99',
@@ -22,7 +24,7 @@ class TestAttackAdd(SimpleTestCase):
             protocol='http',
             port='81',
         )
-        response = self.client.post('/attack/new/', data=fail2ban_data)
+        response = self.client.post('/attack/new/', data=fail2ban_data, **self.request_headers)
 
         attacks_from_db = Attack.query('72.14.207.99', port='81')
         counter = 0
@@ -35,7 +37,7 @@ class TestAttackAdd(SimpleTestCase):
 
     def test_add_fail(self):
         fail2ban_data = dict()
-        response = self.client.post('/attack/new/', data=fail2ban_data)
+        response = self.client.post('/attack/new/', data=fail2ban_data, **self.request_headers)
 
         attacks_from_db = Attack.query('72.14.207.99', port='81')
         counter = 0
