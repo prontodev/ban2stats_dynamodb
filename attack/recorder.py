@@ -15,6 +15,8 @@ class AttackRecorder(object):
         self.data = {}
 
     def set_data(self, attacker_ip=None, service_name=None, protocol=None, port=None):
+        if not (attacker_ip and service_name and protocol and port):
+            raise ValueError('Required attacker_ip, service_name, protocol and port.')
         self.data['attacker_ip'] = attacker_ip
         self.data['service_name'] = service_name
         self.data['protocol'] = protocol

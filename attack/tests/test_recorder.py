@@ -44,3 +44,6 @@ class TestAttackRecord(SimpleTestCase):
             self.assertEqual(item.service_name, 'company web server')
             counter += 1
         self.assertEqual(1, counter)
+
+    def test_set_data_with_empty_values(self):
+        self.assertRaisesMessage(ValueError, 'Required attacker_ip, service_name, protocol and port.', self.attack_recorder.set_data)
