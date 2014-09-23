@@ -17,7 +17,6 @@ class TestAttackRecord(SimpleTestCase):
     def setUp(self):
         self.attack_recorder = AttackRecorder(model=AttackForTesting)
 
-
     def test_get_geo_data(self):
         ip = '72.14.207.99'
         geo_details = self.attack_recorder.get_geo_data(ip=ip)
@@ -33,8 +32,10 @@ class TestAttackRecord(SimpleTestCase):
                         service_name='company web server',
                         protocol='http',
                         port='80',)
-        geo_details = self.attack_recorder.get_geo_data()
+        self.attack_recorder.get_geo_data()
         self.attack_recorder.record_timestamp()
         self.attack_recorder.save()
 
-        attack_from_db = self.attack_recorder.model.query('72.14.207.99', timestamp=geo_details)
+        attacks_from_db = self.attack_recorder.model.query('72.14.207.99', timestamp=self.attack_recorder.data['timestamp'])
+        for item in attacks_from_db:
+            self.assertEqual(item.service_name, 'company web server')
