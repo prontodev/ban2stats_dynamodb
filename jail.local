@@ -1,0 +1,19 @@
+[nginx-http-dev]
+
+enabled = false
+filter  = nginx-http-dev-test
+port    = http,https
+banaction =  /vagrant/ban2stats/client/webservice_client <name> <protocol> <port> <ip>
+logpath = /var/log/nginx/error.log
+
+
+filter nginx-http-dev-test
+
+[Definition]
+
+# Notes.:  Regexp to catch known spambots and software alike. Please verify
+#          that it is your intent to block IPs which were driven by
+#          abovementioned bots.
+# Values:  TEXT
+#
+failregex = ^<HOST> .*"(GET|POST) .*/login.html.* HTTP.*
