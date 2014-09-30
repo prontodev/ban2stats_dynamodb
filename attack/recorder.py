@@ -26,6 +26,8 @@ class AttackRecorder(object):
         if not ip: ip=self.data['attacker_ip']
         geo_ip = GeoIP()
         self.geo_details = geo_ip.city(ip)
+        if self.geo_details is None:
+            raise ValueError("Cannot find Geo details for this IP {0}".format(ip))
 
         self.data['country'] = self.geo_details['country_code']
         self.data['latitude'] = unicode(self.geo_details['latitude'])

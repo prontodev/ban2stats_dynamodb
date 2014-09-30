@@ -25,6 +25,11 @@ class TestAttackRecord(SimpleTestCase):
         self.assertEqual(self.attack_recorder.data['country'], u'US')
         self.assertEqual(self.attack_recorder.data['geo_location'], u'CA, United States')
 
+    def test_get_geo_data_invalid_ip(self):
+        ip = '127.8.8.8'
+        self.assertRaisesMessage(ValueError, 'Cannot find Geo details for this IP 127.8.8.8',
+                                 self.attack_recorder.get_geo_data, ip=ip )
+
     def test_record_timestamp(self):
         self.attack_recorder.record_timestamp()
         self.assertTrue(self.attack_recorder.data['timestamp'])
