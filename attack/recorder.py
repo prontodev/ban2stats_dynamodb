@@ -42,6 +42,7 @@ class AttackRecorder(object):
     def save(self):
         attack = self.model(**self.data)
         attack.save()
+        return attack
 
     def delete_table(self):
         self.model.delete_table()
