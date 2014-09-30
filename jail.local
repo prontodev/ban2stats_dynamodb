@@ -285,7 +285,7 @@ logpath = /var/log/nginx/error.log
 enabled = true
 filter  = nginx-http-dev-test
 port    = http,https
-#banaction =  /vagrant/ban2stats/client/webservice_client <name> <protocol> <port> <ip>
+actionban =  /vagrant/ban2stats/client/webservice_client.py <name> <protocol> <port> <ip>
 logpath = /var/log/nginx/access.log
 # Monitor roundcube server
 
