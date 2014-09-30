@@ -35,7 +35,7 @@ class TestAttackAdd(SimpleTestCase):
         self.assertEqual(1, counter)
         self.assertContains(response, 'Added attack')
 
-    def test_add_fail(self):
+    def test_add_fail__missing_parameter(self):
         fail2ban_data = dict()
         response = self.client.post('/attack/new/', data=fail2ban_data, **self.request_headers)
 
@@ -48,3 +48,22 @@ class TestAttackAdd(SimpleTestCase):
         self.assertEqual(0, counter)
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.content, 'Required attacker_ip, service_name, protocol and port.')
+
+    def test_add_fail__invalid_IP(self):
+        fail2ban_data = dict(
+            attacker_ip='127.8.8.8',
+            service_name='company web server test view: invalid ip',
+            protocol='http',
+            port='82',
+        )
+        response = self.client.post('/attack/new/', data=fail2ban_data, **self.request_headers)
+
+        attacks_from_db = Attack.query('127.8.8.8', port='81')
+        counter = 0
+        for item in attacks_from_db:
+            self.assertEqual(item.service_name, 'company web server test view')
+            self.assertEqual(item.port, '82')
+            counter += 1
+        self.assertEqual(0, counter)
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.content, 'Cannot find Geo details for this IP 127.8.8.8')
