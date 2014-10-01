@@ -7,6 +7,7 @@ class Attack(Model):
         read_capacity_units = 1
         write_capacity_units = 1
         table_name = 'Attack'
+        region = 'ap-southeast-1'
         host = 'http://localhost:4567'
 
     attacker_ip = UnicodeAttribute(hash_key=True)

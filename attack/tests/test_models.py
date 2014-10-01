@@ -11,6 +11,7 @@ class AttackForTesting(Attack):
         read_capacity_units = 1
         write_capacity_units = 1
         table_name = 'AttackTest'
+        region = 'ap-southeast-1'
         host = 'http://localhost:4567'
 
 
