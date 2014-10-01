@@ -3,6 +3,7 @@ from attack.models import Attack
 from django.utils.timezone import get_current_timezone
 from datetime import datetime
 import time
+from pynamodb.exceptions import TableDoesNotExist
 
 
 class AttackForTesting(Attack):
@@ -23,7 +24,11 @@ class TestModel(SimpleTestCase):
     def test_simple_model_usage(self):
         now_timestamp = datetime.now(tz=get_current_timezone())
 
-        AttackForTesting.create_table(wait=True)
+        try:
+            AttackForTesting.create_table(wait=True)
+        except TableDoesNotExist:
+            #It happens when create_table api doesn't finished within `timeout`.
+            print 'Raised TableDoesNotExist'
 
         attack = AttackForTesting(attacker_ip='127.0.0.1',
                         service_name='company web server',
