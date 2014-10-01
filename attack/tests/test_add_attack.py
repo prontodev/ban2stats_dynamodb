@@ -1,6 +1,7 @@
 from django.test import SimpleTestCase
 from attack.models import Attack
 import time
+from pynamodb.exceptions import TableDoesNotExist
 
 
 class TestAttackAdd(SimpleTestCase):
@@ -13,7 +14,12 @@ class TestAttackAdd(SimpleTestCase):
         if Attack.exists():
             Attack.delete_table()
             time.sleep(1)
-        Attack.create_table(wait=True)
+        try:
+            Attack.create_table(wait=True)
+        except TableDoesNotExist:
+            #It happens when create_table api doesn't finished within `timeout`.
+            print 'Raised TableDoesNotExist'
+            Attack.create_table(wait=True)
 
         self.request_headers = {'HTTP_TOKEN': 'oTbCmV71i2Lg5wQMSsPEFKGJ0Banana'}
 
