@@ -13,7 +13,7 @@ class AttackForTesting(Attack):
         write_capacity_units = 1
         table_name = 'AttackTest'
         region = 'ap-southeast-1'
-        host = 'http://localhost:4567'
+        # host = 'http://localhost:4567'
 
 
 class TestModel(SimpleTestCase):
@@ -29,6 +29,7 @@ class TestModel(SimpleTestCase):
         except TableDoesNotExist:
             #It happens when create_table api doesn't finished within `timeout`.
             print 'Raised TableDoesNotExist'
+            AttackForTesting.create_table(wait=True)
 
         attack = AttackForTesting(attacker_ip='127.0.0.1',
                         service_name='company web server',
