@@ -1,3 +1,5 @@
-from django.shortcuts import render
+from django.http.response import HttpResponse
 
-# Create your views here.
+
+def get_stats(request):
+    return HttpResponse("var data = {}")
