@@ -13,7 +13,7 @@ class AttackForTesting(Attack):
         write_capacity_units = 1
         table_name = 'AttackTest'
         region = 'ap-southeast-1'
-        # host = 'http://localhost:4567'
+        host = 'http://localhost:4567'
 
 
 class TestModel(SimpleTestCase):
