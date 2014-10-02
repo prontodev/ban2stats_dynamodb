@@ -8,10 +8,10 @@ from urlparse import urljoin
 class BAN2STATSHandler(object):
 
     WEBSERVICE_HOST = 'http://localhost:8000'
-    BAN2STATS_HANDLER_URL = '/'
-    TOKEN = 'Banana'
+    BAN2STATS_HANDLER_URL = '/attack/new/'
+    TOKEN = 'oTbCmV71i2Lg5wQMSsPEFKGJ0Banana'
 
-    def __init__(self, token):
+    def __init__(self, token=None):
         self.token = token
 
     def api_url(self):
@@ -35,9 +35,9 @@ class BAN2STATSHandler(object):
 
 if __name__ == '__main__':
     ban_handler_data = dict(
-        attacked_service_name=sys.argv[1],
-        attacked_protocol=sys.argv[2],
-        attacked_port=sys.argv[3],
+        service_name=sys.argv[1],
+        protocol=sys.argv[2],
+        port=sys.argv[3],
 
         attacker_ip=sys.argv[4],
     )
