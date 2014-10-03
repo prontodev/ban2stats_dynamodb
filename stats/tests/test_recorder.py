@@ -5,7 +5,7 @@ from stats.recorder import StatsRecorder
 
 class TestStatsRecorder(SimpleTestCase):
 
-    def test_save_stats_success(self):
+    def test_save_banned_ip_success(self):
         attack_data = dict(
             attacker_ip='127.0.0.1',
             service_name='company web server',
