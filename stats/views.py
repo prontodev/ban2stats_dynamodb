@@ -11,6 +11,17 @@ def get_stats(request):
         { country_name:"Malaysia", count: "300"},
         { country_name:"Indonesia", count: "11"}
     ]
-    var data = {};
+    var pins = [
+        { blocked_ip: "72.14.207.99", service_name: "Internal Wordpress System", protocol: "http", port: "80",
+          count: "30", last_seen: "Sep 27, 2014 12:33",
+          latitude: 37.419200897216797, longitude: "-122.05740356445312",
+          geo_location: "CA, United States"
+        }
+    ];
+    var attacked_services = [
+                ['Internal Wordpress System', 32,923],
+                ['Mail Server', 923],
+                ['Company Secured Server', 127,563],
+    ];
     """
     return HttpResponse(content)
