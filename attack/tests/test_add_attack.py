@@ -1,6 +1,6 @@
 from django.test import SimpleTestCase
 from attack.models import Attack
-from stats.models import BlockedIP, AttackedProtocol, BlockedCountry
+from stats.models import BlockedIP, AttackedService, BlockedCountry
 import time
 from pynamodb.exceptions import TableDoesNotExist, TableError
 
@@ -41,11 +41,11 @@ class TestAttackAdd(SimpleTestCase):
         except TableDoesNotExist:
             pass
 
-        attacked_protocol_from_db = AttackedProtocol.query('http', category='attacked_protocol')
+        attacked_protocol_from_db = AttackedService.query('http', category='attacked_service')
         try:
             for item in attacked_protocol_from_db:
-                self.assertEqual(item.category, 'attacked_protocol')
-                self.assertEqual(item.key, 'http')
+                self.assertEqual(item.category, 'attacked_service')
+                self.assertEqual(item.key, 'company web server test view')
                 item.count = 0
                 item.save()
         except TableDoesNotExist:
@@ -89,12 +89,12 @@ class TestAttackAdd(SimpleTestCase):
             self.assertEqual(item.count, 1)
         self.assertEqual(counter, 1)
 
-        attacked_protocol_from_db = AttackedProtocol.query('http', category='attacked_protocol')
+        attacked_protocol_from_db = AttackedService.query('company web server test view', category='attacked_service')
         counter = 0
         for item in attacked_protocol_from_db:
             counter += 1
-            self.assertEqual(item.category, 'attacked_protocol')
-            self.assertEqual(item.key, 'http')
+            self.assertEqual(item.category, 'attacked_service')
+            self.assertEqual(item.key, 'company web server test view')
             self.assertEqual(item.count, 1)
         self.assertEqual(counter, 1)
 

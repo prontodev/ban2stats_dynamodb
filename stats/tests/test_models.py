@@ -1,5 +1,5 @@
 from django.test import SimpleTestCase
-from stats.models import BlockedIP, AttackedProtocol, BlockedCountry
+from stats.models import BlockedIP, AttackedService, BlockedCountry
 import time
 from django.utils.timezone import get_current_timezone
 from datetime import datetime
@@ -38,13 +38,13 @@ class TestModel(SimpleTestCase):
         # BlockedIP.delete_table()
 
         try:
-            AttackedProtocol.create_table(wait=True)
+            AttackedService.create_table(wait=True)
         except TableDoesNotExist:
             #It happens when create_table api doesn't finished within `timeout`.
             print 'Raised TableDoesNotExist'
-            AttackedProtocol.create_table(wait=True)
+            AttackedService.create_table(wait=True)
 
-        attacked_protocol = AttackedProtocol(
+        attacked_protocol = AttackedService(
                         key='Wordpress HTTP',
                         count=1)
         attacked_protocol.save()

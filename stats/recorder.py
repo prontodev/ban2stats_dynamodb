@@ -1,4 +1,4 @@
-from stats.models import BlockedIP, AttackedProtocol, BlockedCountry
+from stats.models import BlockedIP, AttackedService, BlockedCountry
 from django.utils.timezone import get_current_timezone
 from datetime import datetime
 
@@ -58,10 +58,10 @@ class StatsRecorder(object):
         self.blocked_ip.save()
         return self.blocked_ip
 
-    def save_attacked_protocol_record(self):
-        existing_record = self.get_existing_record(self.data['protocol'], dict(category='attacked_protocol'))
+    def save_attacked_service_record(self):
+        existing_record = self.get_existing_record(self.data['service_name'], dict(category='attacked_service'))
         count = self.trigger_counter(existing_record)
-        self.attacked_protocol = AttackedProtocol(key=self.data['protocol'], count=count)
+        self.attacked_protocol = AttackedService(key=self.data['service_name'], count=count)
         self.attacked_protocol.save()
         return self.attacked_protocol
 
@@ -72,7 +72,6 @@ class StatsRecorder(object):
                                               country_name=self.data['country_name'],
                                               count=count)
         self.blocked_country.save()
-        print 'blocked country = ', self.blocked_country.country_name
         return self.blocked_country
 
     def delete_table(self):

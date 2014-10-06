@@ -26,8 +26,8 @@ class BlockedIP(Model):
         host = 'http://localhost:4567'
 
 
-class AttackedProtocol(Model):
-    category = UnicodeAttribute(range_key=True, default='attacked_protocol')
+class AttackedService(Model):
+    category = UnicodeAttribute(range_key=True, default='attacked_service')
     key = UnicodeAttribute(hash_key=True) #Protocol
 
     count = NumberAttribute(default=0)

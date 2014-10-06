@@ -22,6 +22,6 @@ def add_attack(request):
 
     stats_recorder = StatsRecorder(attack_recorder.data)
     stats_recorder.save_banned_ip_record()
-    stats_recorder.save_attacked_protocol_record()
+    stats_recorder.save_attacked_service_record()
     stats_recorder.save_blocked_country_record()
     return HttpResponse('Added attack {0} {1} {2} {3}'.format(attack.service_name, attack.protocol, attack.port, attack.attacker_ip))
