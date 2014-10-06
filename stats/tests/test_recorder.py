@@ -15,6 +15,7 @@ class TestStatsRecorder(SimpleTestCase):
             longitude='111.333333',
             latitude='222.33333',
             country='TH',
+            country_name='Thailand',
             geo_location='Bangkok, Thailand'
         )
         self.recorder = StatsRecorder(self.attack_data)
@@ -53,3 +54,10 @@ class TestStatsRecorder(SimpleTestCase):
         self.assertEqual(attacked_protocol_record_2.category, 'attacked_protocol')
         self.assertEqual(attacked_protocol_record_2.key, 'http')
         self.assertEqual(attacked_protocol_record_2.count, 2)
+
+    def test_save_blocked_country_success(self):
+        blocked_country_record = self.recorder.save_blocked_country_record()
+        self.assertEqual(blocked_country_record.category, 'blocked_country')
+        self.assertEqual(blocked_country_record.key, 'TH')
+        self.assertEqual(blocked_country_record.country_name, 'Thailand')
+        self.assertEqual(blocked_country_record.count, 1)

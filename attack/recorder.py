@@ -30,6 +30,7 @@ class AttackRecorder(object):
             raise ValueError("Cannot find Geo details for this IP {0}".format(ip))
 
         self.data['country'] = self.geo_details['country_code']
+        self.data['country_name'] = self.geo_details['country']
         self.data['latitude'] = unicode(self.geo_details['latitude'])
         self.data['longitude'] = unicode(self.geo_details['longitude'])
 
