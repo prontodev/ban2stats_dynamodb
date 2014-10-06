@@ -110,7 +110,6 @@ class TestAttackAdd(SimpleTestCase):
 
         self.assertContains(response, 'Added attack')
 
-
     def test_add_fail__missing_parameter(self):
         fail2ban_data = dict()
         response = self.client.post('/attack/new/', data=fail2ban_data, **self.request_headers)
