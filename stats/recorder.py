@@ -69,10 +69,10 @@ class StatsRecorder(object):
         existing_record = self.get_existing_record(self.data['country'], dict(category='blocked_country'))
         count = self.trigger_counter(existing_record)
         self.blocked_country = BlockedCountry(key=self.data['country'],
-                                              category='blocked_country',
                                               country_name=self.data['country_name'],
                                               count=count)
         self.blocked_country.save()
+        print 'blocked country = ', self.blocked_country.country_name
         return self.blocked_country
 
     def delete_table(self):

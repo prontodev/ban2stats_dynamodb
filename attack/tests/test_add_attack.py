@@ -1,13 +1,20 @@
 from django.test import SimpleTestCase
 from attack.models import Attack
+from stats.models import BlockedIP, AttackedProtocol, BlockedCountry
 import time
-from pynamodb.exceptions import TableDoesNotExist
+from pynamodb.exceptions import TableDoesNotExist, TableError
 
 
 class TestAttackAdd(SimpleTestCase):
 
     def tearDown(self):
         Attack.delete_table()
+        try:
+            BlockedIP.delete_table()
+        except TableDoesNotExist:
+            pass
+        except TableError:
+            pass
         time.sleep(1)
 
     def setUp(self):
@@ -23,7 +30,39 @@ class TestAttackAdd(SimpleTestCase):
 
         self.request_headers = {'HTTP_TOKEN': 'oTbCmV71i2Lg5wQMSsPEFKGJ0Banana'}
 
+    def reset_stats(self):
+        blocked_ip_from_db = BlockedIP.query('72.14.207.99', category='blocked_ip_72.14.207.99')
+        try:
+            for item in blocked_ip_from_db:
+                self.assertEqual(item.category, 'blocked_ip_72.14.207.99')
+                self.assertEqual(item.key, '72.14.207.99')
+                item.count = 0
+                item.save()
+        except TableDoesNotExist:
+            pass
+
+        attacked_protocol_from_db = AttackedProtocol.query('http', category='attacked_protocol')
+        try:
+            for item in attacked_protocol_from_db:
+                self.assertEqual(item.category, 'attacked_protocol')
+                self.assertEqual(item.key, 'http')
+                item.count = 0
+                item.save()
+        except TableDoesNotExist:
+            pass
+
+        blocked_country_from_db = BlockedCountry.query('US', category='blocked_country')
+        try:
+            for item in blocked_country_from_db:
+                self.assertEqual(item.category, 'blocked_country')
+                self.assertEqual(item.key, 'US')
+                item.count = 0
+                item.save()
+        except TableDoesNotExist:
+            pass
+
     def test_add(self):
+        self.reset_stats()
         fail2ban_data = dict(
             attacker_ip='72.14.207.99',
             service_name='company web server test view',
@@ -31,6 +70,7 @@ class TestAttackAdd(SimpleTestCase):
             port='81',
         )
         response = self.client.post('/attack/new/', data=fail2ban_data, **self.request_headers)
+        time.sleep(2)
 
         attacks_from_db = Attack.query('72.14.207.99', port='81')
         counter = 0
@@ -38,8 +78,38 @@ class TestAttackAdd(SimpleTestCase):
             self.assertEqual(item.service_name, 'company web server test view')
             self.assertEqual(item.port, '81')
             counter += 1
-        self.assertEqual(1, counter)
+        self.assertEqual(counter, 1)
+
+        blocked_ip_from_db = BlockedIP.query('72.14.207.99', category='blocked_ip_72.14.207.99')
+        counter = 0
+        for item in blocked_ip_from_db:
+            counter += 1
+            self.assertEqual(item.category, 'blocked_ip_72.14.207.99')
+            self.assertEqual(item.key, '72.14.207.99')
+            self.assertEqual(item.count, 1)
+        self.assertEqual(counter, 1)
+
+        attacked_protocol_from_db = AttackedProtocol.query('http', category='attacked_protocol')
+        counter = 0
+        for item in attacked_protocol_from_db:
+            counter += 1
+            self.assertEqual(item.category, 'attacked_protocol')
+            self.assertEqual(item.key, 'http')
+            self.assertEqual(item.count, 1)
+        self.assertEqual(counter, 1)
+
+        blocked_country_from_db = BlockedCountry.query('US', category='blocked_country')
+        counter = 0
+        for item in blocked_country_from_db:
+            counter += 1
+            self.assertEqual(item.category, 'blocked_country')
+            self.assertEqual(item.key, 'US')
+            self.assertEqual(item.country_name, 'United States')
+            self.assertEqual(item.count, 1)
+        self.assertEqual(counter, 1)
+
         self.assertContains(response, 'Added attack')
+
 
     def test_add_fail__missing_parameter(self):
         fail2ban_data = dict()

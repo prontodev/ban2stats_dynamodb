@@ -1,22 +1,27 @@
 from django.http.response import HttpResponse, HttpResponseBadRequest
 from attack.recorder import AttackRecorder
+from stats.recorder import StatsRecorder
 from ban2stats.views import token_required
 
 @token_required
 def add_attack(request):
-    print 'request.REQUEST ', request.REQUEST
-    recorder = AttackRecorder()
+    attack_recorder = AttackRecorder()
     try:
-        recorder.set_data(**request.REQUEST.copy())
+        attack_recorder.set_data(**request.REQUEST.copy())
     except ValueError, err:
         print err
         return HttpResponseBadRequest(err)
     try:
-        recorder.get_geo_data()
+        attack_recorder.get_geo_data()
     except ValueError, err:
         print err
         return HttpResponseBadRequest(err)
-    recorder.record_timestamp()
-    attack = recorder.save()
+    attack_recorder.record_timestamp()
+    attack = attack_recorder.save()
     print 'Added attack {0} {1} {2} {3}'.format(attack.service_name, attack.protocol, attack.port, attack.attacker_ip)
+
+    stats_recorder = StatsRecorder(attack_recorder.data)
+    stats_recorder.save_banned_ip_record()
+    stats_recorder.save_attacked_protocol_record()
+    stats_recorder.save_blocked_country_record()
     return HttpResponse('Added attack {0} {1} {2} {3}'.format(attack.service_name, attack.protocol, attack.port, attack.attacker_ip))

@@ -23,14 +23,15 @@ class AttackRecorder(object):
         self.data['port'] = port
 
     def get_geo_data(self, ip=None):
-        if not ip: ip=self.data['attacker_ip']
+        if not ip:
+            ip = self.data['attacker_ip']
         geo_ip = GeoIP()
         self.geo_details = geo_ip.city(ip)
         if self.geo_details is None:
             raise ValueError("Cannot find Geo details for this IP {0}".format(ip))
 
         self.data['country'] = self.geo_details['country_code']
-        self.data['country_name'] = self.geo_details['country']
+        self.data['country_name'] = self.geo_details['country_name']
         self.data['latitude'] = unicode(self.geo_details['latitude'])
         self.data['longitude'] = unicode(self.geo_details['longitude'])
 
