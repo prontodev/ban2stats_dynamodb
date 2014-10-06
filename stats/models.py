@@ -10,7 +10,7 @@ class BlockedIP(Model):
     service_name = UnicodeAttribute()
     protocol = UnicodeAttribute()
     port = UnicodeAttribute()
-    count = NumberAttribute()
+    count = NumberAttribute(default=0)
     last_seen = UnicodeAttribute()
 
     longitude = UnicodeAttribute()
@@ -23,30 +23,33 @@ class BlockedIP(Model):
         write_capacity_units = 1
         table_name = 'Ban2Stats_Stats'
         region = 'ap-southeast-1'
+        host = 'http://localhost:4567'
 
 
 class AttackedProtocol(Model):
-    category = UnicodeAttribute(range_key=True, default='Attacked Protocol')
+    category = UnicodeAttribute(range_key=True, default='attacked_protocol')
     key = UnicodeAttribute(hash_key=True) #Protocol
 
-    count = NumberAttribute()
+    count = NumberAttribute(default=0)
 
     class Meta:
         read_capacity_units = 1
         write_capacity_units = 1
         table_name = 'Ban2Stats_Stats'
         region = 'ap-southeast-1'
+        host = 'http://localhost:4567'
 
 
 class BlockedCountry(Model):
-    category = UnicodeAttribute(range_key=True, default='Blocked Country')
+    category = UnicodeAttribute(range_key=True, default='blocked_country')
     key = UnicodeAttribute(hash_key=True) #Country code
 
     country_name = UnicodeAttribute()
-    count = NumberAttribute()
+    count = NumberAttribute(default=0)
 
     class Meta:
         read_capacity_units = 1
         write_capacity_units = 1
         table_name = 'Ban2Stats_Stats'
         region = 'ap-southeast-1'
+        host = 'http://localhost:4567'

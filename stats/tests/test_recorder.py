@@ -5,8 +5,8 @@ from stats.recorder import StatsRecorder
 
 class TestStatsRecorder(SimpleTestCase):
 
-    def test_save_banned_ip_success(self):
-        attack_data = dict(
+    def setUp(self):
+        self.attack_data = dict(
             attacker_ip='127.0.0.1',
             service_name='company web server',
             protocol='http',
@@ -17,8 +17,16 @@ class TestStatsRecorder(SimpleTestCase):
             country='TH',
             geo_location='Bangkok, Thailand'
         )
-        recorder = StatsRecorder(attack_data)
-        banned_ip_record = recorder.save_banned_ip_record()
+        self.recorder = StatsRecorder(self.attack_data)
+
+    def tearDown(self):
+        time.sleep(1)
+        self.recorder.delete_table()
+        time.sleep(1)
+
+    def test_save_banned_ip_success(self):
+
+        banned_ip_record = self.recorder.save_banned_ip_record()
         self.assertEqual(banned_ip_record.category, 'blocked_ip_127.0.0.1')
         self.assertEqual(banned_ip_record.key, '127.0.0.1')
         self.assertEqual(banned_ip_record.protocol, 'http')
@@ -31,7 +39,17 @@ class TestStatsRecorder(SimpleTestCase):
         self.assertEqual(banned_ip_record.count, 1)
         self.assertTrue(banned_ip_record.last_seen)
 
-        banned_ip_record_2 = recorder.save_banned_ip_record()
+        banned_ip_record_2 = self.recorder.save_banned_ip_record()
         self.assertEqual(banned_ip_record_2.count, 2)
 
-        recorder.delete_table()
+    def test_save_attacked_protocol_success(self):
+
+        attacked_protocol_record = self.recorder.save_attacked_protocol_record()
+        self.assertEqual(attacked_protocol_record.category, 'attacked_protocol')
+        self.assertEqual(attacked_protocol_record.key, 'http')
+        self.assertEqual(attacked_protocol_record.count, 1)
+
+        attacked_protocol_record_2 = self.recorder.save_attacked_protocol_record()
+        self.assertEqual(attacked_protocol_record_2.category, 'attacked_protocol')
+        self.assertEqual(attacked_protocol_record_2.key, 'http')
+        self.assertEqual(attacked_protocol_record_2.count, 2)

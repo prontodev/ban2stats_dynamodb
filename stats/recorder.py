@@ -1,4 +1,4 @@
-from stats.models import BlockedIP
+from stats.models import BlockedIP, AttackedProtocol
 from django.utils.timezone import get_current_timezone
 from datetime import datetime
 
@@ -12,32 +12,35 @@ class StatsRecorder(object):
         if not BlockedIP.exists():
             BlockedIP.create_table(wait=True)
 
-    def get_blocked_ip_category(self):
-        category = 'blocked_ip_{0}'.format(self.ip)
-        return category
-
-    def get_existing_banned_ip_record(self):
-        existing_blocked_ip = BlockedIP.query(self.ip, category=self.get_blocked_ip_category(),
-                                               service_name=self.data['service_name'], Count=True)
-        existing_records = []
-        for item in existing_blocked_ip:
-            print 'service_name = ', item.service_name
-            print 'count = ', item.count
-            existing_records.append(item)
-        print '-----'
-        return existing_records
-
-    def get_existing_banned_ip_count(self):
+    def trigger_counter(self, existing_record):
+        if existing_record is None: return 0
         try:
-            existing_record = self.get_existing_banned_ip_record()[0]
+            existing_record = existing_record[0]
         except IndexError, err:
             return 1
         count = existing_record.count + 1
         return count
 
+    def get_existing_record(self, hash_key, query_data):
+        existing_blocked_ip = BlockedIP.query(hash_key, **query_data)
+        existing_records = []
+        try:
+            for item in existing_blocked_ip:
+                existing_records.append(item)
+        except TypeError, err:
+            return None
+        return existing_records
+
+    def get_blocked_ip_category(self):
+        category = 'blocked_ip_{0}'.format(self.ip)
+        return category
+
     def save_banned_ip_record(self):
         category = self.get_blocked_ip_category()
-        count = self.get_existing_banned_ip_count()
+        existing_record = self.get_existing_record(hash_key=self.ip,
+                                                   query_data=dict(category=category,
+                                                                   service_name=self.data['service_name']))
+        count = self.trigger_counter(existing_record)
         last_seen = unicode(datetime.now(tz=get_current_timezone()))
         self.blocked_ip = BlockedIP(
             category=category,
@@ -54,6 +57,13 @@ class StatsRecorder(object):
         )
         self.blocked_ip.save()
         return self.blocked_ip
+
+    def save_attacked_protocol_record(self):
+        existing_record = self.get_existing_record(self.data['protocol'], dict(category='attacked_protocol'))
+        count = self.trigger_counter(existing_record)
+        self.attacked_protocol = AttackedProtocol(key=self.data['protocol'], count=count)
+        self.attacked_protocol.save()
+        return self.attacked_protocol
 
     def delete_table(self):
         BlockedIP.delete_table()
