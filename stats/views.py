@@ -13,6 +13,12 @@ class PackageBuilder(object):
             object_list.append(object)
         return object_list
 
+    def render_all_objects(self):
+        all_rendered_object = []
+        for each_object in self.get_objects():
+            all_rendered_object.append(self.render_each_object(each_object))
+        return ",\n".join(all_rendered_object)
+
 
 class AttackedServicePackageBuilder(PackageBuilder):
 
@@ -24,12 +30,6 @@ class AttackedServicePackageBuilder(PackageBuilder):
 
     def render_each_object(self, object):
         return u"""["{0}", {1}]""".format(object.key, object.count)
-
-    def render_all_objects(self):
-        all_rendered_object = []
-        for each_object in self.get_objects():
-            all_rendered_object.append(self.render_each_object(each_object))
-        return ",\n".join(all_rendered_object)
 
     def render_as_javascript(self):
         template = """

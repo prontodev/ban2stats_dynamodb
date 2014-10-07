@@ -17,7 +17,7 @@ class TestBlockedIPPackage(SimpleTestCase):
 
                                longitude=111.333333,
                                latitude=222.33333,
-                               country='TH',
+                               country='US',
                                geo_location='CA, United States',
 
                                count=1000,
@@ -34,8 +34,33 @@ class TestBlockedIPPackage(SimpleTestCase):
         content = self.blocked_ips_builder.render_each_object(self.item1)
         self.assertIn('"blocked_ip": "72.14.20.99"', content)
         self.assertIn('"service_name": "Company Wordpress System"', content)
+        self.assertIn('"protocol": "http"', content)
+        self.assertIn('"port": "80"', content)
         self.assertIn('"longitude": 111.333333', content)
+        self.assertIn('"latitude": 222.33333', content)
+        self.assertIn('"country": "US"', content)
         self.assertIn('"geo_location": "CA, United States"', content)
         self.assertIn('"count": 1000', content)
         self.assertIn('"last_seen": "Sep 27, 2014 08:49:28 +0000"', content)
+        self.assertIn('{', content)
+        self.assertIn('}', content)
         self.assertNotIn("category", content)
+
+    def test_render_all_objects(self):
+        content = self.blocked_ips_builder.render_all_objects()
+        self.assertIn('"blocked_ip": "72.14.20.99"', content)
+        self.assertIn('"service_name": "Company Wordpress System"', content)
+        self.assertIn('"protocol": "http"', content)
+        self.assertIn('"port": "80"', content)
+        self.assertIn('"longitude": 111.333333', content)
+        self.assertIn('"latitude": 222.33333', content)
+        self.assertIn('"country": "US"', content)
+        self.assertIn('"geo_location": "CA, United States"', content)
+        self.assertIn('"count": 1000', content)
+        self.assertIn('"last_seen": "Sep 27, 2014 08:49:28 +0000"', content)
+        self.assertIn('{', content)
+        self.assertIn('}', content)
+        self.assertNotIn("category", content)
+        self.assertNotEqual(",", content[-1])
+        # self.assertIn('[', content)
+        # self.assertIn(']', content)
