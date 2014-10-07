@@ -1,4 +1,31 @@
 from django.http.response import HttpResponse
+from stats.models import AttackedService
+
+
+class AttackedServicePackage(object):
+
+    def get_objects(self):
+        attacked_services = AttackedService.scan(category="attacked_service", count__gt=0)
+        self.attacked_services_list = []
+        for item in attacked_services:
+            self.attacked_services_list.append(item)
+        return self.attacked_services_list
+
+    def render_each_object(self, object):
+        return u"""["{0}", {1}]""".format(object.key, object.count)
+
+    def render_all_objects(self):
+        all_rendered_object = []
+        for each_object in self.get_objects():
+            all_rendered_object.append(self.render_each_object(each_object))
+        return ",".join(all_rendered_object)
+
+    def render_as_javascript(self):
+        template = """
+        var attacked_services = [
+            {0}
+        ];"""
+        return template.format(self.render_all_objects())
 
 
 def get_stats(request):
@@ -19,9 +46,9 @@ def get_stats(request):
         }
     ];
     var attacked_services = [
-                ['Internal Wordpress System', 32,923],
-                ['Mail Server', 923],
-                ['Company Secured Server', 127,563],
+        ['Internal Wordpress System', 32923],
+        ['Mail Server', 923],
+        ['Company Secured Server', 127563],
     ];
     """
     return HttpResponse(content)
