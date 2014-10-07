@@ -32,6 +32,7 @@ class TestGetAttackedServiceStats(SimpleTestCase):
         self.assertIn(expected_content, content)
         expected_content = u'''["Company Secured Server", 127563]'''
         self.assertIn(expected_content, content)
+        self.assertNotEqual(",", content[-1])
 
     def test_render_javascript(self):
         content = self.attacked_services.render_as_javascript()
