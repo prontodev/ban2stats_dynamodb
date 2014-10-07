@@ -1,5 +1,8 @@
 from django.http.response import HttpResponse
 from stats.models import AttackedService, BlockedIP
+from pynamodb.exceptions import ScanError
+import json
+from dateutil.parser import parse
 
 
 class PackageBuilder(object):
@@ -14,6 +17,8 @@ class PackageBuilder(object):
 class AttackedServicePackageBuilder(PackageBuilder):
 
     def get_objects(self):
+        if not AttackedService.exists():
+            return []
         attacked_services = AttackedService.scan(category="attacked_service", count__gt=0)
         return self.put_objects_to_list(attacked_services)
 
@@ -36,9 +41,24 @@ class AttackedServicePackageBuilder(PackageBuilder):
 class BlockedIPPackageBuilder(PackageBuilder):
 
     def get_objects(self):
+        if not BlockedIP.exists():
+            return []
         blocked_ip_objects = BlockedIP.scan(category__begins_with='blocked_ip_')
         blocked_ip_list = self.put_objects_to_list(blocked_ip_objects)
         return blocked_ip_list
+
+    def format_last_seen_string(self, last_seen_raw):
+        last_seen_datetime = parse(last_seen_raw)
+        return last_seen_datetime.strftime("%b %d, %Y %H:%M:%S %z")
+
+    def render_each_object(self, object):
+        output_dict = dict()
+        for item_key, item_value in object._get_attributes().iteritems():
+            output_dict[item_key] = getattr(object, item_key)
+        output_dict['blocked_ip'] = output_dict.pop('key')
+        output_dict.pop('category')
+        output_dict['last_seen'] = self.format_last_seen_string(output_dict['last_seen'])
+        return json.dumps(output_dict)
 
 
 def get_stats(request):

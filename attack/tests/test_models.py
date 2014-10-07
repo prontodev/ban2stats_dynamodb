@@ -36,8 +36,8 @@ class TestModel(SimpleTestCase):
                         protocol='http',
                         port='80',
 
-                        longitude='111.333333',
-                        latitude='222.33333',
+                        longitude=111.333333,
+                        latitude=222.33333,
                         country='TH',
                         geo_location='Bangkok, Thailand',
                         timestamp=now_timestamp)

@@ -32,8 +32,8 @@ class AttackRecorder(object):
 
         self.data['country'] = self.geo_details['country_code']
         self.data['country_name'] = self.geo_details['country_name']
-        self.data['latitude'] = unicode(self.geo_details['latitude'])
-        self.data['longitude'] = unicode(self.geo_details['longitude'])
+        self.data['latitude'] = self.geo_details['latitude']
+        self.data['longitude'] = self.geo_details['longitude']
 
         self.data['geo_location'] = ', '.join([self.geo_details['region'], self.geo_details['country_name']])
 

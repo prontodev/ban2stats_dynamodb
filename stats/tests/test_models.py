@@ -30,8 +30,8 @@ class TestModel(SimpleTestCase):
                         count=0,
                         last_seen=now_timestamp,
 
-                        longitude='111.333333',
-                        latitude='222.33333',
+                        longitude=111.333333,
+                        latitude=222.33333,
                         country='TH',
                         geo_location='Bangkok, Thailand')
         blocked_ip.save()

@@ -13,8 +13,8 @@ class BlockedIP(Model):
     count = NumberAttribute(default=0)
     last_seen = UnicodeAttribute()
 
-    longitude = UnicodeAttribute()
-    latitude = UnicodeAttribute()
+    longitude = NumberAttribute()
+    latitude = NumberAttribute()
     country = UnicodeAttribute()
     geo_location = UnicodeAttribute()
 
