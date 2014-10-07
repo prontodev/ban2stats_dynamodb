@@ -67,6 +67,9 @@ class BlockedIPPackageBuilder(PackageBuilder):
         return template.format(self.render_all_objects())
 
 
+class BlockedCountryPackageBuilder(PackageBuilder):
+    pass
+
 def get_stats(request):
     if not AttackedService.exists():
         AttackedService.create_table()
@@ -74,7 +77,7 @@ def get_stats(request):
     item1.save()
     if not BlockedIP.exists():
         BlockedIP.create_table()
-    item1 = BlockedIP("72.14.20.99",
+    item2 = BlockedIP("72.14.20.99",
                            category="blocked_ip_72.14.207.99",
                            service_name='Company Wordpress System',
                            protocol='http',
@@ -88,7 +91,7 @@ def get_stats(request):
                            count=1000,
                            last_seen='2014-09-27T08:49:28.556775+0000'
                            )
-    item1.save()
+    item2.save()
 
 
     content = """
@@ -106,4 +109,6 @@ def get_stats(request):
     content += BlockedIPPackageBuilder().render_as_javascript()
     content += "\n"
     content += AttackedServicePackageBuilder().render_as_javascript()
+    item1.delete()
+    item2.delete()
     return HttpResponse(content)
