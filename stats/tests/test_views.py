@@ -11,7 +11,7 @@ class TestGetAttackedServiceStats(SimpleTestCase):
         if not AttackedService.exists():
             AttackedService.create_table()
             time.sleep(1)
-        self.item1 =AttackedService(key="Internal Wordpress System", count=32923)
+        self.item1 = AttackedService(key="Internal Wordpress System", count=32923)
         self.item1.save()
         AttackedService(key="Mail Server", count=300).save()
         AttackedService(key="Company Secured Server", count=127563).save()
@@ -46,3 +46,13 @@ class TestGetAttackedServiceStats(SimpleTestCase):
         self.assertIn(expected_content, content)
         expected_content = u'''];'''
         self.assertIn(expected_content, content)
+
+
+class TestGetStatsViews(SimpleTestCase):
+
+    def test_view(self):
+        response = self.client.get('/stats/')
+        self.assertContains(response, 'var blocked_ip_count = ')
+        self.assertContains(response, 'var blocked_countries = [')
+        self.assertContains(response, 'var pins = [')
+        self.assertContains(response, 'var attacked_services = [')

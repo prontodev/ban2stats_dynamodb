@@ -18,12 +18,11 @@ class AttackedServicePackage(object):
         all_rendered_object = []
         for each_object in self.get_objects():
             all_rendered_object.append(self.render_each_object(each_object))
-        return ",".join(all_rendered_object)
+        return ",\n".join(all_rendered_object)
 
     def render_as_javascript(self):
         template = """
-        var attacked_services = [
-            {0}
+        var attacked_services = [\r{0}\r
         ];"""
         return template.format(self.render_all_objects())
 
@@ -45,10 +44,6 @@ def get_stats(request):
           geo_location: "CA, United States"
         }
     ];
-    var attacked_services = [
-        ['Internal Wordpress System', 32923],
-        ['Mail Server', 923],
-        ['Company Secured Server', 127563],
-    ];
     """
+    content += AttackedServicePackage().render_as_javascript()
     return HttpResponse(content)
