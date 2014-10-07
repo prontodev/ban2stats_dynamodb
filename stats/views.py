@@ -60,6 +60,11 @@ class BlockedIPPackageBuilder(PackageBuilder):
         output_dict['last_seen'] = self.format_last_seen_string(output_dict['last_seen'])
         return json.dumps(output_dict)
 
+    def render_as_javascript(self):
+        template = """
+        var blocked_ips = [\r{0}\r
+        ];"""
+        return template.format(self.render_all_objects())
 
 def get_stats(request):
     content = """
@@ -71,7 +76,7 @@ def get_stats(request):
         { country_name:"Malaysia", count: "300"},
         { country_name:"Indonesia", count: "11"}
     ]
-    var pins = [
+    var blocked_ips = [
         { blocked_ip: "72.14.207.99", service_name: "Internal Wordpress System", protocol: "http", port: "80",
           count: "30", last_seen: "Sep 27, 2014 12:33",
           latitude: 37.419200897216797, longitude: "-122.05740356445312",

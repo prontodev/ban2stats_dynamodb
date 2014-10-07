@@ -62,5 +62,8 @@ class TestBlockedIPPackage(SimpleTestCase):
         self.assertIn('}', content)
         self.assertNotIn("category", content)
         self.assertNotEqual(",", content[-1])
-        # self.assertIn('[', content)
-        # self.assertIn(']', content)
+
+    def test_render_javascript(self):
+        content = self.blocked_ips_builder.render_as_javascript()
+        self.assertIn('var blocked_ips = [', content)
+        self.assertIn('];', content)
