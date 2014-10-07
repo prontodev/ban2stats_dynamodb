@@ -66,7 +66,31 @@ class BlockedIPPackageBuilder(PackageBuilder):
         ];"""
         return template.format(self.render_all_objects())
 
+
 def get_stats(request):
+    if not AttackedService.exists():
+        AttackedService.create_table()
+    item1 = AttackedService(key="Internal Wordpress System", count=32923)
+    item1.save()
+    if not BlockedIP.exists():
+        BlockedIP.create_table()
+    item1 = BlockedIP("72.14.20.99",
+                           category="blocked_ip_72.14.207.99",
+                           service_name='Company Wordpress System',
+                           protocol='http',
+                           port='80',
+
+                           longitude=-122.05740356445312,
+                           latitude=37.419200897216797,
+                           country='US',
+                           geo_location='CA, United States',
+
+                           count=1000,
+                           last_seen='2014-09-27T08:49:28.556775+0000'
+                           )
+    item1.save()
+
+
     content = """
     var blocked_ip_count = "2,777,000";
     var blocked_countries = [
@@ -76,13 +100,10 @@ def get_stats(request):
         { country_name:"Malaysia", count: "300"},
         { country_name:"Indonesia", count: "11"}
     ]
-    var blocked_ips = [
-        { blocked_ip: "72.14.207.99", service_name: "Internal Wordpress System", protocol: "http", port: "80",
-          count: "30", last_seen: "Sep 27, 2014 12:33",
-          latitude: 37.419200897216797, longitude: "-122.05740356445312",
-          geo_location: "CA, United States"
-        }
-    ];
+
     """
+    content += "\n"
+    content += BlockedIPPackageBuilder().render_as_javascript()
+    content += "\n"
     content += AttackedServicePackageBuilder().render_as_javascript()
     return HttpResponse(content)
