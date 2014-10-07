@@ -1,5 +1,5 @@
 from django.test import SimpleTestCase
-from stats.views import AttackedServicePackage
+from stats.views import AttackedServicePackageBuilder
 from stats.models import AttackedService
 import time
 
@@ -14,7 +14,7 @@ class TestGetAttackedServiceStats(SimpleTestCase):
         self.item1.save()
         AttackedService(key="Mail Server", count=300).save()
         AttackedService(key="Company Secured Server", count=127563).save()
-        self.attacked_services = AttackedServicePackage()
+        self.attacked_services = AttackedServicePackageBuilder()
 
     def test_get_attacked_services(self):
         objects = self.attacked_services.get_objects()

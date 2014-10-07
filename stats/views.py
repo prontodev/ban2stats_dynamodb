@@ -1,15 +1,21 @@
 from django.http.response import HttpResponse
-from stats.models import AttackedService
+from stats.models import AttackedService, BlockedIP
 
 
-class AttackedServicePackage(object):
+class PackageBuilder(object):
+
+    def put_objects_to_list(self, objects):
+        object_list = []
+        for object in objects:
+            object_list.append(object)
+        return object_list
+
+
+class AttackedServicePackageBuilder(PackageBuilder):
 
     def get_objects(self):
         attacked_services = AttackedService.scan(category="attacked_service", count__gt=0)
-        self.attacked_services_list = []
-        for item in attacked_services:
-            self.attacked_services_list.append(item)
-        return self.attacked_services_list
+        return self.put_objects_to_list(attacked_services)
 
     def render_each_object(self, object):
         return u"""["{0}", {1}]""".format(object.key, object.count)
@@ -25,6 +31,14 @@ class AttackedServicePackage(object):
         var attacked_services = [\r{0}\r
         ];"""
         return template.format(self.render_all_objects())
+
+
+class BlockedIPPackageBuilder(PackageBuilder):
+
+    def get_objects(self):
+        blocked_ip_objects = BlockedIP.scan(category__begins_with='blocked_ip_')
+        blocked_ip_list = self.put_objects_to_list(blocked_ip_objects)
+        return blocked_ip_list
 
 
 def get_stats(request):
@@ -45,5 +59,5 @@ def get_stats(request):
         }
     ];
     """
-    content += AttackedServicePackage().render_as_javascript()
+    content += AttackedServicePackageBuilder().render_as_javascript()
     return HttpResponse(content)
