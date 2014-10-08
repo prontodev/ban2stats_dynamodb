@@ -22,7 +22,7 @@ class PackageBuilder(object):
         return ",\n".join(all_rendered_object)
 
     def render_all_objects_as_list(self):
-        template = """[\n{0}\n];"""
+        template = """[\n{0}\n]"""
         return template.format(self.render_all_objects())
 
 
