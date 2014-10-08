@@ -69,7 +69,7 @@ class BlockedIPPackageBuilder(PackageBuilder):
 
 class BlockedCountryPackageBuilder(PackageBuilder):
 
-    def get_objects(self):
+    def get_top_5_objects(self):
         if not BlockedCountry.exists():
             return []
         blocked_country_objects = BlockedCountry.count_index.query('blocked_country', limit=5, scan_index_forward=False)

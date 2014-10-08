@@ -29,7 +29,7 @@ class TestBlockedCountryPackageBuilder(SimpleTestCase):
         time.sleep(1)
 
     def test_get_top_5(self):
-        objects = self.builder.get_objects()
+        objects = self.builder.get_top_5_objects()
         self.assertEqual(len(objects), 5)
         self.assertEqual(objects[0].category, "blocked_country")
         self.assertEqual(objects[0].count, 34123)
