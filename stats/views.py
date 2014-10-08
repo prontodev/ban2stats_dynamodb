@@ -1,5 +1,5 @@
 from django.http.response import HttpResponse
-from stats.models import AttackedService, BlockedIP
+from stats.models import AttackedService, BlockedIP, BlockedCountry
 from pynamodb.exceptions import ScanError
 import json
 from dateutil.parser import parse
@@ -25,7 +25,7 @@ class AttackedServicePackageBuilder(PackageBuilder):
     def get_objects(self):
         if not AttackedService.exists():
             return []
-        attacked_services = AttackedService.scan(category="attacked_service", count__gt=0)
+        attacked_services = AttackedService.query("attacked_service", count__gt=0)
         return self.put_objects_to_list(attacked_services)
 
     def render_each_object(self, object):
@@ -68,17 +68,26 @@ class BlockedIPPackageBuilder(PackageBuilder):
 
 
 class BlockedCountryPackageBuilder(PackageBuilder):
-    pass
+
+    def get_objects(self):
+        if not BlockedCountry.exists():
+            return []
+        blocked_country_objects = BlockedCountry.query('blocked_country')
+        return self.put_objects_to_list(blocked_country_objects)
+
 
 def get_stats(request):
+    import time
     if not AttackedService.exists():
         AttackedService.create_table()
+        time.sleep(1)
     item1 = AttackedService(key="Internal Wordpress System", count=32923)
     item1.save()
     if not BlockedIP.exists():
+        time.sleep(1)
         BlockedIP.create_table()
-    item2 = BlockedIP("72.14.20.99",
-                           category="blocked_ip_72.14.207.99",
+    item2 = BlockedIP("blocked_ip_72.14.207.99",
+                           key="72.14.20.99",
                            service_name='Company Wordpress System',
                            protocol='http',
                            port='80',

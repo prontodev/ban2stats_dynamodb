@@ -37,8 +37,8 @@ class StatsRecorder(object):
 
     def save_banned_ip_record(self):
         category = self.get_blocked_ip_category()
-        existing_record = self.get_existing_record(hash_key=self.ip,
-                                                   query_data=dict(category=category,
+        existing_record = self.get_existing_record(category,
+                                                   query_data=dict(key=self.ip,
                                                                    service_name=self.data['service_name']))
         count = self.trigger_counter(existing_record)
         last_seen = unicode(datetime.now(tz=get_current_timezone()))
@@ -59,14 +59,14 @@ class StatsRecorder(object):
         return self.blocked_ip
 
     def save_attacked_service_record(self):
-        existing_record = self.get_existing_record(self.data['service_name'], dict(category='attacked_service'))
+        existing_record = self.get_existing_record('attacked_service', dict(category=self.data['service_name']))
         count = self.trigger_counter(existing_record)
         self.attacked_protocol = AttackedService(key=self.data['service_name'], count=count)
         self.attacked_protocol.save()
         return self.attacked_protocol
 
     def save_blocked_country_record(self):
-        existing_record = self.get_existing_record(self.data['country'], dict(category='blocked_country'))
+        existing_record = self.get_existing_record('blocked_country', dict(key=self.data['country']))
         count = self.trigger_counter(existing_record)
         self.blocked_country = BlockedCountry(key=self.data['country'],
                                               country_name=self.data['country_name'],

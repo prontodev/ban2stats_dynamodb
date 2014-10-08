@@ -1,12 +1,22 @@
 from pynamodb.models import Model
 from pynamodb.attributes import UnicodeAttribute, NumberAttribute
+from pynamodb.indexes import LocalSecondaryIndex, AllProjection
+
+
+# class CategoryIndex(LocalSecondaryIndex):
+#
+#     class Meta:
+#         projection = AllProjection()
+#
+#     category = UnicodeAttribute(range_key=True)
+#     key = UnicodeAttribute(hash_key=True)
 
 
 class BlockedIP(Model):
 
-    category = UnicodeAttribute(range_key=True)
+    category = UnicodeAttribute(hash_key=True)
 
-    key = UnicodeAttribute(hash_key=True) #IP
+    key = UnicodeAttribute(range_key=True) #IP
     service_name = UnicodeAttribute()
     protocol = UnicodeAttribute()
     port = UnicodeAttribute()
@@ -27,8 +37,8 @@ class BlockedIP(Model):
 
 
 class AttackedService(Model):
-    category = UnicodeAttribute(range_key=True, default='attacked_service')
-    key = UnicodeAttribute(hash_key=True) #Protocol
+    category = UnicodeAttribute(hash_key=True, default='attacked_service')
+    key = UnicodeAttribute(range_key=True) #Protocol
 
     count = NumberAttribute(default=0)
 
@@ -41,11 +51,13 @@ class AttackedService(Model):
 
 
 class BlockedCountry(Model):
-    category = UnicodeAttribute(range_key=True, default='blocked_country')
-    key = UnicodeAttribute(hash_key=True) #Country code
+    category = UnicodeAttribute(hash_key=True, default='blocked_country')
+    key = UnicodeAttribute(range_key=True) #Country code
 
     country_name = UnicodeAttribute()
     count = NumberAttribute(default=0)
+
+    # category_index = CategoryIndex()
 
     class Meta:
         read_capacity_units = 1

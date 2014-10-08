@@ -9,8 +9,8 @@ class TestBlockedIPPackage(SimpleTestCase):
         if not BlockedIP.exists():
             BlockedIP.create_table()
             time.sleep(1)
-        self.item1 = BlockedIP("72.14.20.99",
-                               category="blocked_ip_72.14.207.99",
+        self.item1 = BlockedIP("blocked_ip_72.14.207.99",
+                               key="72.14.20.99",
                                service_name='Company Wordpress System',
                                protocol='http',
                                port='80',

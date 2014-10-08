@@ -9,6 +9,7 @@ from pynamodb.exceptions import TableDoesNotExist
 class TestModel(SimpleTestCase):
 
     def tearDown(self):
+        BlockedIP.delete_table()
         time.sleep(1)
 
     def test_BlockedIP_simple_model_usage(self):
