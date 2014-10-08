@@ -27,7 +27,7 @@ class TestBlockedIPPackage(SimpleTestCase):
         self.blocked_ips_builder = BlockedIPPackageBuilder()
 
     def tearDown(self):
-        self.BlockedIP.delete_table()
+        BlockedIP.delete_table()
         time.sleep(1)
 
     def test_get_objects(self):
