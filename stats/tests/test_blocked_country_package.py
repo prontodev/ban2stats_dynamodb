@@ -44,3 +44,11 @@ class TestBlockedCountryPackageBuilder(SimpleTestCase):
         self.assertIn('"country_name": "Morocco"', content)
         self.assertIn('"count": "34,123"', content)
         self.assertIn('}', content)
+
+    def test_render_all_objects(self):
+        content = self.builder.render_all_objects()
+        self.assertIn('{', content)
+        self.assertIn('"country_name": "Morocco"', content)
+        self.assertIn('"count": "34,123"', content)
+        self.assertIn('}', content)
+        self.assertNotEqual(',', content[-1])

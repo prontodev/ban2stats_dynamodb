@@ -74,10 +74,14 @@ class BlockedCountryPackageBuilder(PackageBuilder):
         blocked_country_objects = BlockedCountry.count_index.query('blocked_country', limit=5, scan_index_forward=False)
         return self.put_objects_to_list(blocked_country_objects)[:5]
 
+    def get_objects(self):
+        return self.get_top_5_objects()
+
     def render_each_object(self, object):
         count_as_string = "{:,}".format(object.count)
         data_dict = dict(country_name=object.country_name, count=count_as_string)
         return json.dumps(data_dict)
+
 
 def get_stats(request):
     import time
