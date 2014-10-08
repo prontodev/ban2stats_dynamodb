@@ -18,6 +18,10 @@ class PackageBuilder(object):
             all_rendered_object.append(self.render_each_object(each_object))
         return ",\n".join(all_rendered_object)
 
+    def render_all_objects_as_list(self):
+        template = """[\r{0}\r];"""
+        return template.format(self.render_all_objects())
+
 
 class AttackedServicePackageBuilder(PackageBuilder):
 
@@ -32,9 +36,8 @@ class AttackedServicePackageBuilder(PackageBuilder):
 
     def render_as_javascript(self):
         template = """
-        var attacked_services = [\r{0}\r
-        ];"""
-        return template.format(self.render_all_objects())
+        var attacked_services = {0};"""
+        return template.format(self.render_all_objects_as_list())
 
 
 class BlockedIPPackageBuilder(PackageBuilder):
@@ -61,9 +64,8 @@ class BlockedIPPackageBuilder(PackageBuilder):
 
     def render_as_javascript(self):
         template = """
-        var blocked_ips = [\r{0}\r
-        ];"""
-        return template.format(self.render_all_objects())
+        var blocked_ips = {0};"""
+        return template.format(self.render_all_objects_as_list())
 
 
 class BlockedCountryPackageBuilder(PackageBuilder):
@@ -82,6 +84,10 @@ class BlockedCountryPackageBuilder(PackageBuilder):
         data_dict = dict(country_name=object.country_name, count=count_as_string)
         return json.dumps(data_dict)
 
+    def render_as_javascript(self):
+        template = """
+        var blocked_countries = {0};"""
+        return template.format(self.render_all_objects_as_list())
 
 def get_stats(request):
     import time

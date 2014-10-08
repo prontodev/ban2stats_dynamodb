@@ -52,3 +52,9 @@ class TestBlockedCountryPackageBuilder(SimpleTestCase):
         self.assertIn('"count": "34,123"', content)
         self.assertIn('}', content)
         self.assertNotEqual(',', content[-1])
+
+    def test_render_as_javascript(self):
+        content = self.builder.render_as_javascript()
+
+        expected_content = u'''];'''
+        self.assertIn(expected_content, content)
