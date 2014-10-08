@@ -80,16 +80,16 @@ class TestAttackAdd(SimpleTestCase):
             counter += 1
         self.assertEqual(counter, 1)
 
-        blocked_ip_from_db = BlockedIP.query('72.14.207.99', category='blocked_ip_72.14.207.99')
+        blocked_ip_from_db = BlockedIP.query('blocked_ip_72.14.207.99', key='72.14.207.99')
         counter = 0
         for item in blocked_ip_from_db:
             counter += 1
             self.assertEqual(item.category, 'blocked_ip_72.14.207.99')
-            self.assertEqual(item.key, '72.14.207.99')
+            self.assertEqual(item.key, u'72.14.207.99')
             self.assertEqual(item.count, 1)
         self.assertEqual(counter, 1)
 
-        attacked_protocol_from_db = AttackedService.query('company web server test view', category='attacked_service')
+        attacked_protocol_from_db = AttackedService.query('attacked_service', key='company web server test view')
         counter = 0
         for item in attacked_protocol_from_db:
             counter += 1
@@ -98,7 +98,7 @@ class TestAttackAdd(SimpleTestCase):
             self.assertEqual(item.count, 1)
         self.assertEqual(counter, 1)
 
-        blocked_country_from_db = BlockedCountry.query('US', category='blocked_country')
+        blocked_country_from_db = BlockedCountry.query('blocked_country', key='US')
         counter = 0
         for item in blocked_country_from_db:
             counter += 1
