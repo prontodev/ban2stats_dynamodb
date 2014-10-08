@@ -22,7 +22,7 @@ class PackageBuilder(object):
         return ",\n".join(all_rendered_object)
 
     def render_all_objects_as_list(self):
-        template = """[\r{0}\r];"""
+        template = """[\n{0}\n];"""
         return template.format(self.render_all_objects())
 
 
@@ -50,6 +50,7 @@ class BlockedIPPackageBuilder(PackageBuilder):
             return []
         blocked_ip_objects = BlockedIP.scan(category__begins_with='blocked_ip_')
         blocked_ip_list = self.put_objects_to_list(blocked_ip_objects)
+        self.objects = blocked_ip_list
         return blocked_ip_list
 
     def format_last_seen_string(self, last_seen_raw):
@@ -65,10 +66,14 @@ class BlockedIPPackageBuilder(PackageBuilder):
         output_dict['last_seen'] = self.format_last_seen_string(output_dict['last_seen'])
         return json.dumps(output_dict)
 
+    def objects_count_as_string(self, number):
+        return "{:,}".format(number)
+
     def render_as_javascript(self):
         template = """
-        var blocked_ips = {0};"""
-        return template.format(self.render_all_objects_as_list())
+        var blocked_ips = {0};\n
+        var blocked_ip_count = "{1}";"""
+        return template.format(self.render_all_objects_as_list(), self.objects_count_as_string(len(self.objects)))
 
 
 class BlockedCountryPackageBuilder(PackageBuilder):
@@ -138,10 +143,8 @@ def get_stats(request):
     item6.save()
 
 
-    content = """
-    var blocked_ip_count = "2,777,000";
+    content = ""
 
-    """
     content += "\n"
     content += BlockedCountryPackageBuilder().render_as_javascript()
     content += "\n"
