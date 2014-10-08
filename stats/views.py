@@ -8,12 +8,9 @@ class PackageBuilder(object):
 
     def put_objects_to_list(self, objects):
         object_list = []
-        try:
-            for object in objects:
-                object_list.append(object)
-            return object_list
-        except ValueError, err:
-            return []
+        for object in objects:
+            object_list.append(object)
+        return object_list
 
     def render_all_objects(self):
         all_rendered_object = []
@@ -80,8 +77,17 @@ class BlockedCountryPackageBuilder(PackageBuilder):
 
     def get_top_5_objects(self):
         if not BlockedCountry.exists():
+            BlockedCountry.create_table()
             return []
-        blocked_country_objects = BlockedCountry.count_index.query('blocked_country', limit=5, scan_index_forward=False, Count=True)
+        try:
+            blocked_country_objects = BlockedCountry.count_index.query('blocked_country',
+                                                                   limit=5, scan_index_forward=False
+                                                                   )
+        except ValueError:
+            blocked_country_objects = BlockedCountry.count_index.query('blocked_country',
+                                                                   limit=5, scan_index_forward=False
+                                                                   )
+
         objects_as_list = self.put_objects_to_list(blocked_country_objects)
         if len(objects_as_list) < 5:
             return objects_as_list
@@ -126,9 +132,20 @@ def get_stats(request):
                            last_seen='2014-09-27T08:49:28.556775+0000'
                            )
     item2.save()
+
+
+
+    content = ""
+    content += "\n"
+    content += BlockedIPPackageBuilder().render_as_javascript()
+    content += "\n"
+    content += AttackedServicePackageBuilder().render_as_javascript()
+    item1.delete()
+    item2.delete()
+
     if not BlockedCountry.exists():
-        time.sleep(1)
         BlockedCountry.create_table()
+    time.sleep(1)
     item1 = BlockedCountry("blocked_country", key='US', country_name='United States', count=22)
     item1.save()
     item2 = BlockedCountry("blocked_country", key='TH', country_name='Thailand', count=3000)
@@ -141,16 +158,7 @@ def get_stats(request):
     item5.save()
     item6 = BlockedCountry("blocked_country", key='PE', country_name='Peru', count=50)
     item6.save()
-
-
-    content = ""
-
     content += "\n"
     content += BlockedCountryPackageBuilder().render_as_javascript()
-    content += "\n"
-    content += BlockedIPPackageBuilder().render_as_javascript()
-    content += "\n"
-    content += AttackedServicePackageBuilder().render_as_javascript()
-    item1.delete()
-    item2.delete()
+
     return HttpResponse(content)

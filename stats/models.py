@@ -1,12 +1,14 @@
 from pynamodb.models import Model
 from pynamodb.attributes import UnicodeAttribute, NumberAttribute
-from pynamodb.indexes import LocalSecondaryIndex, AllProjection
+from pynamodb.indexes import LocalSecondaryIndex, AllProjection, GlobalSecondaryIndex
 
 
 class CountIndex(LocalSecondaryIndex):
 
     class Meta:
         projection = AllProjection()
+        index_name = "count_index"
+        host = "http://localhost:4567"
 
     category = UnicodeAttribute(hash_key=True)
     count = NumberAttribute(range_key=True)
@@ -20,6 +22,8 @@ class BlockedIP(Model):
     service_name = UnicodeAttribute()
     protocol = UnicodeAttribute()
     port = UnicodeAttribute()
+
+    count_index = CountIndex()
     count = NumberAttribute(default=0)
     last_seen = UnicodeAttribute()
 
@@ -39,7 +43,7 @@ class BlockedIP(Model):
 class AttackedService(Model):
     category = UnicodeAttribute(hash_key=True, default='attacked_service')
     key = UnicodeAttribute(range_key=True) #Protocol
-
+    count_index = CountIndex()
     count = NumberAttribute(default=0)
 
     class Meta:
@@ -55,9 +59,8 @@ class BlockedCountry(Model):
     key = UnicodeAttribute(range_key=True) #Country code
 
     country_name = UnicodeAttribute()
-    count = NumberAttribute(default=0)
-
     count_index = CountIndex()
+    count = NumberAttribute(default=0)
 
     class Meta:
         read_capacity_units = 1
