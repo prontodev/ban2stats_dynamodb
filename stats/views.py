@@ -72,8 +72,8 @@ class BlockedCountryPackageBuilder(PackageBuilder):
     def get_objects(self):
         if not BlockedCountry.exists():
             return []
-        blocked_country_objects = BlockedCountry.query('blocked_country')
-        return self.put_objects_to_list(blocked_country_objects)
+        blocked_country_objects = BlockedCountry.count_index.query('blocked_country', limit=5, scan_index_forward=False)
+        return self.put_objects_to_list(blocked_country_objects)[:5]
 
 
 def get_stats(request):

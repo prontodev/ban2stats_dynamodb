@@ -3,13 +3,13 @@ from pynamodb.attributes import UnicodeAttribute, NumberAttribute
 from pynamodb.indexes import LocalSecondaryIndex, AllProjection
 
 
-# class CategoryIndex(LocalSecondaryIndex):
-#
-#     class Meta:
-#         projection = AllProjection()
-#
-#     category = UnicodeAttribute(range_key=True)
-#     key = UnicodeAttribute(hash_key=True)
+class CountIndex(LocalSecondaryIndex):
+
+    class Meta:
+        projection = AllProjection()
+
+    category = UnicodeAttribute(hash_key=True)
+    count = NumberAttribute(range_key=True)
 
 
 class BlockedIP(Model):
@@ -57,7 +57,7 @@ class BlockedCountry(Model):
     country_name = UnicodeAttribute()
     count = NumberAttribute(default=0)
 
-    # category_index = CategoryIndex()
+    count_index = CountIndex()
 
     class Meta:
         read_capacity_units = 1
