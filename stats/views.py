@@ -8,9 +8,12 @@ class PackageBuilder(object):
 
     def put_objects_to_list(self, objects):
         object_list = []
-        for object in objects:
-            object_list.append(object)
-        return object_list
+        try:
+            for object in objects:
+                object_list.append(object)
+            return object_list
+        except ValueError, err:
+            return []
 
     def render_all_objects(self):
         all_rendered_object = []
@@ -73,8 +76,11 @@ class BlockedCountryPackageBuilder(PackageBuilder):
     def get_top_5_objects(self):
         if not BlockedCountry.exists():
             return []
-        blocked_country_objects = BlockedCountry.count_index.query('blocked_country', limit=5, scan_index_forward=False)
-        return self.put_objects_to_list(blocked_country_objects)[:5]
+        blocked_country_objects = BlockedCountry.count_index.query('blocked_country', limit=5, scan_index_forward=False, Count=True)
+        objects_as_list = self.put_objects_to_list(blocked_country_objects)
+        if len(objects_as_list) < 5:
+            return objects_as_list
+        return objects_as_list[:5]
 
     def get_objects(self):
         return self.get_top_5_objects()
@@ -88,6 +94,7 @@ class BlockedCountryPackageBuilder(PackageBuilder):
         template = """
         var blocked_countries = {0};"""
         return template.format(self.render_all_objects_as_list())
+
 
 def get_stats(request):
     import time
@@ -114,19 +121,29 @@ def get_stats(request):
                            last_seen='2014-09-27T08:49:28.556775+0000'
                            )
     item2.save()
+    if not BlockedCountry.exists():
+        time.sleep(1)
+        BlockedCountry.create_table()
+    item1 = BlockedCountry("blocked_country", key='US', country_name='United States', count=22)
+    item1.save()
+    item2 = BlockedCountry("blocked_country", key='TH', country_name='Thailand', count=3000)
+    item2.save()
+    item3 = BlockedCountry("blocked_country", key='SG', country_name='Singapore', count=12094)
+    item3.save()
+    item4 = BlockedCountry("blocked_country", key='AL', country_name='Albania', count=3)
+    item4.save()
+    item5 = BlockedCountry("blocked_country", key='MA', country_name='Morocco', count=34123)
+    item5.save()
+    item6 = BlockedCountry("blocked_country", key='PE', country_name='Peru', count=50)
+    item6.save()
 
 
     content = """
     var blocked_ip_count = "2,777,000";
-    var blocked_countries = [
-        { country_name: "United States", count: "3,000"},
-        { country_name:"Thailand", count : "2,999"},
-        { country_name:"Singapore", count: "1,000"},
-        { country_name:"Malaysia", count: "300"},
-        { country_name:"Indonesia", count: "11"}
-    ]
 
     """
+    content += "\n"
+    content += BlockedCountryPackageBuilder().render_as_javascript()
     content += "\n"
     content += BlockedIPPackageBuilder().render_as_javascript()
     content += "\n"
