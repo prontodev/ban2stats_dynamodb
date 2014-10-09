@@ -1,3 +1,0 @@
-#Filter
-[Definition]
-failregex = ^<HOST> .*"(GET|POST) .*/login.html.* HTTP.*

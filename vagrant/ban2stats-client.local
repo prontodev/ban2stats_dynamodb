@@ -1,8 +1,0 @@
-#action
-[Definition]
-actionstart =
-actionstop =
-actioncheck =
-actionban = /vagrant/ban2stats/client/webservice_client.py <name> <protocol> <port> <ip>
-actionunban =
-ignoreregex =

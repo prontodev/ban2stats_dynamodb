@@ -1,6 +1,0 @@
-django>=1.7
-pynamodb
-httplib2
-
-
-#Require manual install GeoIP C Library to use django.contrib.gis.geoip
