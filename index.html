@@ -1,83 +1,318 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <meta charset='utf-8'>
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <link href='https://fonts.googleapis.com/css?family=Architects+Daughter' rel='stylesheet' type='text/css'>
-    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
-    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen">
-    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print">
+<html lang="en">
 
-    <!--[if lt IE 9]>
-    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
 
-    <title>Ban2stats by prontodev</title>
-  </head>
+    <title>Ban2Stats</title>
 
-  <body>
-    <header>
-      <div class="inner">
-        <h1>Ban2stats</h1>
-        <h2>Stats for Fail2Ban</h2>
-        <a href="https://github.com/prontodev/ban2stats" class="button"><small>View project on</small>GitHub</a>
-      </div>
-    </header>
+    <!-- Bootstrap Core CSS -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/c3.css" rel="stylesheet">
+    <link href="css/custom.css" rel="stylesheet">
 
-    <div id="content-wrapper">
-      <div class="inner clearfix">
-        <section id="main-content">
-          <h3>
-<a name="welcome-to-github-pages" class="anchor" href="#welcome-to-github-pages"><span class="octicon octicon-link"></span></a>Welcome to GitHub Pages.</h3>
+    <!-- Custom CSS -->
+    <style>
+    body {
+        padding-top: 50px;
+        /* Required padding for .navbar-fixed-top. Remove if using .navbar-static-top. Change if height of navigation changes. */
+    }
+    .navbar {
+        margin-bottom: 0px;
+    }
+    .huge {
+        font-size: 70px;
+    }
+    .m-t-40 {
+        margin-top: 40px;
+    }
+    .footer {
+        padding:20px 0;
+        background-color: #f9f9f9;
+    }
+      #map {
+        width: 100%;
+        height: 400px;
+      }
+    </style>
+</head>
 
-<p>This automatic page generator is the easiest way to create beautiful pages for all of your projects. Author your page content here using GitHub Flavored Markdown, select a template crafted by a designer, and publish. After your page is generated, you can check out the new branch:</p>
+<body>
 
-<pre><code>$ cd your_repo_root/repo_name
-$ git fetch origin
-$ git checkout gh-pages
-</code></pre>
+    <!-- Navigation -->
+    <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+        <div class="container">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="#">Ban2Stats</a>
+            </div>
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav">
+                    <li>
+                        <a href="#">About</a>
+                    </li>
+                    <li>
+                        <a href="#">Services</a>
+                    </li>
+                    <li>
+                        <a href="#">Contact</a>
+                    </li>
+                </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container -->
+    </nav>
 
-<p>If you're using the GitHub for Mac, simply sync your repository and you'll see the new branch.</p>
+    <!-- Page Content -->
+    <div id="map"></div>
+    <div class="container">
+        <div class="row m-t-40">
+            <div class="col-md-4">
+                <h2>Blocked IPs</h2>
+                <p class="lead huge" id="blocked-ip-count"></p>
+            </div>
+            <div class="col-md-4">
+                <h2>Attacked Services</h2>
+                <div id="attacktypes"></div>
+            </div>
+            <div class="col-md-4">
+                <h2>Top Blocked Countries</h2>
+                <table class="table table-striped">
+                  <thead>
+                    <tr>
+                      <th>Country</th>
+                      <th>Blocked IPs</th>
+                    </tr>
+                  </thead>
+                  <tbody id="tbody-blocked-countries">
 
-<h3>
-<a name="designer-templates" class="anchor" href="#designer-templates"><span class="octicon octicon-link"></span></a>Designer Templates</h3>
+                  </tbody>
+                </table>
+            </div>
+        </div>
+        <!-- /.row -->
 
-<p>We've crafted some handsome templates for you to use. Go ahead and continue to layouts to browse through them. You can easily go back to edit your page before publishing. After publishing your page, you can revisit the page generator and switch to another theme. Your Page content will be preserved if it remained markdown format.</p>
-
-<h3>
-<a name="rather-drive-stick" class="anchor" href="#rather-drive-stick"><span class="octicon octicon-link"></span></a>Rather Drive Stick?</h3>
-
-<p>If you prefer to not use the automatic generator, push a branch named <code>gh-pages</code> to your repository to create a page manually. In addition to supporting regular HTML content, GitHub Pages support Jekyll, a simple, blog aware static site generator written by our own Tom Preston-Werner. Jekyll makes it easy to create site-wide headers and footers without having to copy them across every page. It also offers intelligent blog support and other advanced templating features.</p>
-
-<h3>
-<a name="authors-and-contributors" class="anchor" href="#authors-and-contributors"><span class="octicon octicon-link"></span></a>Authors and Contributors</h3>
-
-<p>You can <a href="https://github.com/blog/821" class="user-mention">@mention</a> a GitHub username to generate a link to their profile. The resulting <code>&lt;a&gt;</code> element will link to the contributor's GitHub Profile. For example: In 2007, Chris Wanstrath (<a href="https://github.com/defunkt" class="user-mention">@defunkt</a>), PJ Hyett (<a href="https://github.com/pjhyett" class="user-mention">@pjhyett</a>), and Tom Preston-Werner (<a href="https://github.com/mojombo" class="user-mention">@mojombo</a>) founded GitHub.</p>
-
-<h3>
-<a name="support-or-contact" class="anchor" href="#support-or-contact"><span class="octicon octicon-link"></span></a>Support or Contact</h3>
-
-<p>Having trouble with Pages? Check out the documentation at <a href="http://help.github.com/pages">http://help.github.com/pages</a> or contact <a href="mailto:support@github.com">support@github.com</a> and we’ll help you sort it out.</p>
-        </section>
-
-        <aside id="sidebar">
-          <a href="https://github.com/prontodev/ban2stats/zipball/master" class="button">
-            <small>Download</small>
-            .zip file
-          </a>
-          <a href="https://github.com/prontodev/ban2stats/tarball/master" class="button">
-            <small>Download</small>
-            .tar.gz file
-          </a>
-
-          <p class="repo-owner"><a href="https://github.com/prontodev/ban2stats"></a> is maintained by <a href="https://github.com/prontodev">prontodev</a>.</p>
-
-          <p>This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the Architect theme by <a href="https://twitter.com/jasonlong">Jason Long</a>.</p>
-        </aside>
-      </div>
     </div>
+    <!-- /.container -->
+    <footer>
+       <div class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <p>Ban2Stats</p>
+                </div>
+            </div>
+        </div>
+        </div> 
+    </footer>
+    <!-- jQuery Version 1.11.0-->
+    <script src="js/jquery-1.11.0.js"></script> 
 
-  
-  </body>
+    <!-- Bootstrap Core JavaScript -->
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/d3.min.js"></script>
+    <script src="js/c3.min.js"></script>
+    <script src="stats_data.js"></script>
+    <script type="text/javascript">
+    var chart = c3.generate({
+        bindto: '#attacktypes',
+        data: {
+            columns: attacked_services,
+            type : 'donut',
+        },
+        donut: {
+            title: "Attack Protocols"
+        }
+    });
+    </script>
+    <script src="https://maps.googleapis.com/maps/api/js"></script>
+
+    <script type="text/javascript">
+        $("#blocked-ip-count").html(blocked_ip_count);
+
+        var tbody = $("#tbody-blocked-countries");
+        var each_country_html;
+        $.each(blocked_countries, function(index, item){
+            each_country_html = "<tr><td>"+ item.country_name + "</td><td class='text-right'>" + item.count +"</td></tr>"
+            tbody.append($(each_country_html));
+
+        })
+
+    </script>
+    <script>
+      var script = '<script type="text/javascript" src="./js/markerclusterer';
+      if (document.location.search.indexOf('compiled') !== -1) {
+        script += '_compiled';
+      }
+      script += '.js"><' + '/script>';
+      document.write(script);
+    </script>
+
+    <script>
+      function initialize() {
+        var center = new google.maps.LatLng(25,0);
+
+        var map = new google.maps.Map(document.getElementById('map'), {
+          zoom: 2,
+          center: center,
+          disableDefaultUI: true,
+          mapTypeId: google.maps.MapTypeId.ROADMAP,
+          panControl: true,
+          zoomControl: true,
+          mapTypeControl: false,
+          scaleControl: true,
+          overviewMapControl: true,
+          styles: [
+    {
+        "stylers": [
+            {
+                "visibility": "off"
+            }
+        ]
+    },
+    {
+        "featureType": "road",
+        "stylers": [
+            {
+                "visibility": "on"
+            },
+            {
+                "color": "#ffffff"
+            }
+        ]
+    },
+    {
+        "featureType": "road.arterial",
+        "stylers": [
+            {
+                "visibility": "on"
+            },
+            {
+                "color": "#fee379"
+            }
+        ]
+    },
+    {
+        "featureType": "road.highway",
+        "stylers": [
+            {
+                "visibility": "on"
+            },
+            {
+                "color": "#fee379"
+            }
+        ]
+    },
+    {
+        "featureType": "landscape",
+        "stylers": [
+            {
+                "visibility": "on"
+            },
+            {
+                "color": "#08304b"
+            }
+        ]
+    },
+    {
+        "featureType": "water",
+        "stylers": [
+            {
+                "visibility": "on"
+            },
+            {
+                "color": "#021019"
+            }
+        ]
+    },
+    {},
+    {
+        "featureType": "road",
+        "elementType": "labels",
+        "stylers": [
+            {
+                "visibility": "off"
+            }
+        ]
+    },
+    {
+        "featureType": "poi.park",
+        "elementType": "geometry.fill",
+        "stylers": [
+            {
+                "visibility": "on"
+            },
+            {
+                "color": "#83cead"
+            }
+        ]
+    },
+    {
+        "elementType": "labels",
+        "stylers": [
+            {
+                "visibility": "off"
+            }
+        ]
+    },
+    {
+        "featureType": "landscape.man_made",
+        "elementType": "geometry",
+        "stylers": [
+            {
+                "weight": 0.9
+            },
+            {
+                "visibility": "off"
+            }
+        ]
+    }
+]
+        });
+        function build_info_window(marker, blocked_ip_data){
+            var html = "<b>"+blocked_ip_data.service_name + " Attack</b>";
+            html += "<br />Last seen: " + blocked_ip_data.last_seen +
+                    "<br/> Ban count: " + blocked_ip_data.count +
+                    "<br/> " + blocked_ip_data.geo_location +
+                    "<br/> " + blocked_ip_data.blocked_ip;
+            var infowindow = new google.maps.InfoWindow({
+              content: html
+            });
+            google.maps.event.addListener(marker, 'click', function(event){
+              infowindow.open(map, marker);
+              if((oldinfowindow!=null) && (oldinfowindow!=infowindow))
+                  { oldinfowindow.close(); }
+              oldinfowindow=infowindow;
+            });
+        }
+
+        var markers = [];
+        $.each(blocked_ips, function(index, blocked_ip) {
+          var latLng = new google.maps.LatLng(blocked_ip.latitude, blocked_ip.longitude);
+          var marker = new google.maps.Marker({position: latLng});
+          markers.push(marker);
+          build_info_window(marker, blocked_ip);
+
+        });
+        var markerCluster = new MarkerClusterer(map, markers);
+      }
+      var oldinfowindow=null;
+      google.maps.event.addDomListener(window, 'load', initialize);
+
+
+
+    </script>
+</body>
 </html>

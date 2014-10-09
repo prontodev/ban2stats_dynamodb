@@ -81,10 +81,10 @@
         <div class="row m-t-40">
             <div class="col-md-4">
                 <h2>Blocked IPs</h2>
-                <p class="lead huge">223,231</p>
+                <p class="lead huge" id="blocked-ip-count"></p>
             </div>
             <div class="col-md-4">
-                <h2>Attack Protocols</h2>
+                <h2>Attacked Services</h2>
                 <div id="attacktypes"></div>
             </div>
             <div class="col-md-4">
@@ -96,27 +96,8 @@
                       <th>Blocked IPs</th>
                     </tr>
                   </thead>
-                  <tbody>
-                    <tr>
-                      <td>China</td>
-                      <td>33,201</td>
-                    </tr>
-                    <tr>
-                      <td>India</td>
-                      <td>12,232</td>
-                    </tr>
-                    <tr>
-                      <td>Nigeria</td>
-                      <td>5,942</td>
-                    </tr>
-                    <tr>
-                      <td>Algeria</td>
-                      <td>2,722</td>
-                    </tr>
-                    <tr>
-                      <td>North Korea</td>
-                      <td>1,232</td>
-                    </tr>
+                  <tbody id="tbody-blocked-countries">
+
                   </tbody>
                 </table>
             </div>
@@ -143,15 +124,12 @@
     <script src="js/bootstrap.min.js"></script>
     <script src="js/d3.min.js"></script>
     <script src="js/c3.min.js"></script>
+    <script src="http://localhost:8001/stats/"></script>
     <script type="text/javascript">
     var chart = c3.generate({
         bindto: '#attacktypes',
         data: {
-            columns: [
-                ['SSH', 32,923],
-                ['Postfix', 923],
-                ['Wordpress', 127,563],
-            ],
+            columns: attacked_services,
             type : 'donut',
         },
         donut: {
@@ -160,7 +138,19 @@
     });
     </script>
     <script src="https://maps.googleapis.com/maps/api/js"></script>
-    <script src="data.json"></script>
+
+    <script type="text/javascript">
+        $("#blocked-ip-count").html(blocked_ip_count);
+
+        var tbody = $("#tbody-blocked-countries");
+        var each_country_html;
+        $.each(blocked_countries, function(index, item){
+            each_country_html = "<tr><td>"+ item.country_name + "</td><td>" + item.count +"</td></tr>"
+            tbody.append($(each_country_html));
+
+        })
+
+    </script>
     <script>
       var script = '<script type="text/javascript" src="./js/markerclusterer';
       if (document.location.search.indexOf('compiled') !== -1) {
@@ -288,15 +278,15 @@
         });
 
         var markers = [];
-        for (var i = 0; i < 100; i++) {
-          var dataPhoto = data.photos[i];
-          var latLng = new google.maps.LatLng(dataPhoto.latitude,
-              dataPhoto.longitude);
+        $.each(blocked_ips, function(index, blocked_ip) {
+            console.log(blocked_ip)
+          var latLng = new google.maps.LatLng(blocked_ip.latitude,
+              blocked_ip.longitude);
           var marker = new google.maps.Marker({
             position: latLng
           });
           markers.push(marker);
-        }
+        });
         var markerCluster = new MarkerClusterer(map, markers);
       }
       google.maps.event.addDomListener(window, 'load', initialize);
