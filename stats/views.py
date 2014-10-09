@@ -114,6 +114,11 @@ def get_stats(request):
         time.sleep(1)
     item1 = AttackedService(key="Internal Wordpress System", count=32923)
     item1.save()
+    item1_1 = AttackedService(key="Mail Server", count=300)
+    item1_1.save()
+    item1_2 = AttackedService(key="Company Secured Server", count=127563)
+    item1_2.save()
+
     if not BlockedIP.exists():
         time.sleep(1)
         BlockedIP.create_table()
@@ -141,6 +146,8 @@ def get_stats(request):
     content += "\n"
     content += AttackedServicePackageBuilder().render_as_javascript()
     item1.delete()
+    item1_1.delete()
+    item1_2.delete()
     item2.delete()
 
     if not BlockedCountry.exists():
@@ -161,4 +168,4 @@ def get_stats(request):
     content += "\n"
     content += BlockedCountryPackageBuilder().render_as_javascript()
 
-    return HttpResponse(content)
+    return HttpResponse(content, content_type="application/javascript")
