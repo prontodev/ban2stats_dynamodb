@@ -10,7 +10,7 @@ class TestAttackAdd(SimpleTestCase):
     def tearDown(self):
         Attack.delete_table()
         try:
-            BlockedIP.delete_table()
+            BlockedCountry.delete_table()
         except TableDoesNotExist:
             pass
         except TableError:
@@ -27,6 +27,14 @@ class TestAttackAdd(SimpleTestCase):
             #It happens when create_table api doesn't finished within `timeout`.
             print 'Raised TableDoesNotExist'
             Attack.create_table(wait=True)
+
+        try:
+            BlockedCountry.delete_table()
+        except TableDoesNotExist:
+            pass
+        except TableError:
+            pass
+        time.sleep(1)
 
         self.request_headers = {'HTTP_TOKEN': 'oTbCmV71i2Lg5wQMSsPEFKGJ0Banana'}
 

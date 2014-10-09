@@ -57,3 +57,6 @@ class TestGetStatsViews(SimpleTestCase):
         self.assertContains(response, 'var blocked_countries = [')
         self.assertContains(response, 'var blocked_ips = [')
         self.assertContains(response, 'var attacked_services = [')
+
+        AttackedService.delete_table()
+        BlockedCountry.delete_table()
