@@ -1,4 +1,5 @@
 from django.http.response import HttpResponse
+from pynamodb.exceptions import ScanError, QueryError
 from stats.models import AttackedService, BlockedIP, BlockedCountry
 import json
 from dateutil.parser import parse
@@ -8,8 +9,13 @@ class PackageBuilder(object):
 
     def put_objects_to_list(self, objects):
         object_list = []
-        for object in objects:
-            object_list.append(object)
+        try:
+            for object in objects:
+                object_list.append(object)
+        except ScanError:
+            pass
+        except QueryError:
+            pass
         return object_list
 
     def render_all_objects(self):
@@ -41,6 +47,9 @@ class AttackedServicePackageBuilder(PackageBuilder):
 
 
 class BlockedIPPackageBuilder(PackageBuilder):
+
+    def __init__(self):
+        self.objects = []
 
     def get_objects(self):
         if not BlockedIP.exists():
@@ -77,7 +86,6 @@ class BlockedCountryPackageBuilder(PackageBuilder):
 
     def get_top_5_objects(self):
         if not BlockedCountry.exists():
-            BlockedCountry.create_table()
             return []
         try:
             blocked_country_objects = BlockedCountry.count_index.query('blocked_country',

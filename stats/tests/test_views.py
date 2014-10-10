@@ -37,7 +37,6 @@ class TestGetStatsViews(SimpleTestCase):
                                )
         item2.save()
         if not BlockedCountry.exists():
-            time.sleep(1)
             BlockedCountry.create_table()
         item1 = BlockedCountry("blocked_country", key='US', country_name='United States', count=22)
         item1.save()

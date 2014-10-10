@@ -1,6 +1,7 @@
 from pynamodb.models import Model
 from pynamodb.attributes import UnicodeAttribute, NumberAttribute
 from pynamodb.indexes import LocalSecondaryIndex, AllProjection, GlobalSecondaryIndex
+from django.conf import settings
 
 
 class CountIndex(LocalSecondaryIndex):
@@ -8,7 +9,8 @@ class CountIndex(LocalSecondaryIndex):
     class Meta:
         projection = AllProjection()
         index_name = "count_index"
-        host = "http://localhost:4567"
+        region = 'ap-southeast-1'
+        host = settings.DYNAMODB_HOST
 
     category = UnicodeAttribute(hash_key=True)
     count = NumberAttribute(range_key=True)
@@ -37,7 +39,7 @@ class BlockedIP(Model):
         write_capacity_units = 1
         table_name = 'Ban2Stats_Stats'
         region = 'ap-southeast-1'
-        host = 'http://localhost:4567'
+        host = settings.DYNAMODB_HOST
 
 
 class AttackedService(Model):
@@ -51,7 +53,7 @@ class AttackedService(Model):
         write_capacity_units = 1
         table_name = 'Ban2Stats_Stats'
         region = 'ap-southeast-1'
-        host = 'http://localhost:4567'
+        host = settings.DYNAMODB_HOST
 
 
 class BlockedCountry(Model):
@@ -66,5 +68,5 @@ class BlockedCountry(Model):
         read_capacity_units = 1
         write_capacity_units = 1
         table_name = 'Ban2Stats_Stats'
-        region = 'ap-southeast-1'
-        host = 'http://localhost:4567'
+        region = settings.DYNAMODB_REGION
+        host = settings.DYNAMODB_HOST

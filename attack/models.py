@@ -1,5 +1,6 @@
 from pynamodb.models import Model
 from pynamodb.attributes import UnicodeAttribute, NumberAttribute, UTCDateTimeAttribute
+from django.conf import settings
 
 
 class Attack(Model):
@@ -8,7 +9,7 @@ class Attack(Model):
         write_capacity_units = 1
         table_name = 'Attack'
         region = 'ap-southeast-1'
-        host = 'http://localhost:4567'
+        host = settings.DYNAMODB_HOST
 
     attacker_ip = UnicodeAttribute(hash_key=True)
 

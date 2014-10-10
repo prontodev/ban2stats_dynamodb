@@ -4,6 +4,7 @@ from django.utils.timezone import get_current_timezone
 from datetime import datetime
 import time
 from pynamodb.exceptions import TableDoesNotExist
+from django.conf import settings
 
 
 class AttackForTesting(Attack):
@@ -13,7 +14,7 @@ class AttackForTesting(Attack):
         write_capacity_units = 1
         table_name = 'AttackTest'
         region = 'ap-southeast-1'
-        host = 'http://localhost:4567'
+        host = settings.DYNAMODB_HOST
 
 
 class TestModel(SimpleTestCase):
