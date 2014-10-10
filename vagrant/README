@@ -1,0 +1,27 @@
+On host machine
+copy files in this 'vagrant' folder to ../../
+Download ban2stats in ../../
+run 'vagrant up' in ../../
+
+
+After you 'vagrant ssh'
+1. Test the setup :
+   1.1 "ps -ef |grep dynalite"  and you should see dynalite running
+   1.2 visit http://<localhost or your vagrant ip>/login.html you should see 404 page from Nginx
+
+2. Add AWS Key on your vagrant
+goto /home/vagrant
+vim .boto
+put your AWS credentials for DynamoDB ( Required for both local DynamoDB and one on AWS)
+
+3. Install development environment
+> workon ban2stats
+> cd /vagrant/ban2stats
+> pip install -r ban2stats/requirements.txt
+> pip install -r ban2stats/requirements-developement.txt
+> python manage.py test
+> python manage.py runserver
+
+
+
+
