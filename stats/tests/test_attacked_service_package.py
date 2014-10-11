@@ -1,4 +1,5 @@
 from django.test import SimpleTestCase
+from django.conf import settings
 from stats.views import AttackedServicePackageBuilder
 from stats.models import AttackedService
 import time
@@ -9,7 +10,7 @@ class TestGetAttackedServiceStats(SimpleTestCase):
     def setUp(self):
         if not AttackedService.exists():
             AttackedService.create_table()
-            time.sleep(1)
+            time.sleep(settings.TESTING_SLEEP_TIME)
         self.item1 = AttackedService(key="Internal Wordpress System", count=32923, category='attacked_service')
         self.item1.save()
         AttackedService(key="Mail Server", count=300).save()
@@ -18,7 +19,7 @@ class TestGetAttackedServiceStats(SimpleTestCase):
 
     def tearDown(self):
         AttackedService.delete_table()
-        time.sleep(1)
+        time.sleep(settings.TESTING_SLEEP_TIME)
 
     def test_get_attacked_services(self):
         objects = self.attacked_services.get_objects()

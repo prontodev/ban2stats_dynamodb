@@ -1,4 +1,5 @@
 from django.test import SimpleTestCase
+from django.conf import settings
 from stats.models import BlockedIP, AttackedService, BlockedCountry
 import time
 from django.utils.timezone import get_current_timezone
@@ -10,7 +11,7 @@ class TestModel(SimpleTestCase):
 
     def tearDown(self):
         BlockedIP.delete_table()
-        time.sleep(1)
+        time.sleep(settings.TESTING_SLEEP_TIME)
 
     def test_BlockedIP_simple_model_usage(self):
         now_timestamp = unicode(datetime.now(tz=get_current_timezone()))

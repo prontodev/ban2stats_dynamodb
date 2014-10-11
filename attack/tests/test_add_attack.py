@@ -1,4 +1,5 @@
 from django.test import SimpleTestCase
+from django.conf import settings
 from attack.models import Attack
 from stats.models import BlockedIP, AttackedService, BlockedCountry
 import time
@@ -15,12 +16,12 @@ class TestAttackAdd(SimpleTestCase):
             pass
         except TableError:
             pass
-        time.sleep(1)
+        time.sleep(settings.TESTING_SLEEP_TIME)
 
     def setUp(self):
         if Attack.exists():
             Attack.delete_table()
-            time.sleep(1)
+            time.sleep(settings.TESTING_SLEEP_TIME)
         try:
             Attack.create_table(wait=True)
         except TableDoesNotExist:
@@ -34,7 +35,7 @@ class TestAttackAdd(SimpleTestCase):
             pass
         except TableError:
             pass
-        time.sleep(1)
+        time.sleep(settings.TESTING_SLEEP_TIME)
 
         self.request_headers = {'HTTP_TOKEN': 'oTbCmV71i2Lg5wQMSsPEFKGJ0Banana'}
 

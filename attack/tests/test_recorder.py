@@ -1,6 +1,7 @@
 from attack.recorder import AttackRecorder
 from attack.tests.test_models import AttackForTesting
 from django.test import SimpleTestCase
+from django.conf import settings
 import time
 
 
@@ -14,7 +15,7 @@ class TestAttackRecord(SimpleTestCase):
 
     def tearDown(self):
         self.attack_recorder.delete_table()
-        time.sleep(1)
+        time.sleep(settings.TESTING_SLEEP_TIME)
 
     def setUp(self):
         self.attack_recorder = AttackRecorder(model=AttackForTesting)

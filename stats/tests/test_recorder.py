@@ -1,4 +1,5 @@
 from django.test import SimpleTestCase
+from django.conf import settings
 import time
 from stats.recorder import StatsRecorder
 
@@ -21,9 +22,9 @@ class TestStatsRecorder(SimpleTestCase):
         self.recorder = StatsRecorder(self.attack_data)
 
     def tearDown(self):
-        time.sleep(1)
+        time.sleep(settings.TESTING_SLEEP_TIME)
         self.recorder.delete_table()
-        time.sleep(1)
+        time.sleep(settings.TESTING_SLEEP_TIME)
 
     def test_save_banned_ip_success(self):
 

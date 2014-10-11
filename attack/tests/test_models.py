@@ -20,7 +20,7 @@ class AttackForTesting(Attack):
 class TestModel(SimpleTestCase):
 
     def tearDown(self):
-        time.sleep(1)
+        time.sleep(settings.TESTING_SLEEP_TIME)
 
     def test_simple_model_usage(self):
         now_timestamp = datetime.now(tz=get_current_timezone())

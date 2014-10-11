@@ -1,4 +1,5 @@
 from django.test import SimpleTestCase
+from django.conf import settings
 from stats.models import BlockedIP
 from stats.views import BlockedIPPackageBuilder
 import time
@@ -8,7 +9,7 @@ class TestBlockedIPPackage(SimpleTestCase):
     def setUp(self):
         if not BlockedIP.exists():
             BlockedIP.create_table()
-            time.sleep(1)
+            time.sleep(settings.TESTING_SLEEP_TIME)
         self.item1 = BlockedIP("blocked_ip_72.14.207.99",
                                key="72.14.20.99",
                                service_name='Company Wordpress System',
@@ -28,7 +29,7 @@ class TestBlockedIPPackage(SimpleTestCase):
 
     def tearDown(self):
         BlockedIP.delete_table()
-        time.sleep(1)
+        time.sleep(settings.TESTING_SLEEP_TIME)
 
     def test_get_objects(self):
         objects = self.blocked_ips_builder.get_objects()

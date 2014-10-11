@@ -1,4 +1,5 @@
 from django.test import SimpleTestCase
+from django.conf import settings
 from stats.models import BlockedCountry
 from stats.views import BlockedCountryPackageBuilder
 import time
@@ -10,7 +11,7 @@ class TestBlockedCountryPackageBuilder(SimpleTestCase):
         self.builder = BlockedCountryPackageBuilder()
         if not BlockedCountry.exists():
             BlockedCountry.create_table()
-            time.sleep(1)
+            time.sleep(settings.TESTING_SLEEP_TIME)
         self.item1 = BlockedCountry("blocked_country", key='US', country_name='United States', count=22)
         self.item1.save()
         self.item2 = BlockedCountry("blocked_country", key='TH', country_name='Thailand', count=3000)
@@ -26,7 +27,7 @@ class TestBlockedCountryPackageBuilder(SimpleTestCase):
 
     def tearDown(self):
         BlockedCountry.delete_table()
-        time.sleep(1)
+        time.sleep(settings.TESTING_SLEEP_TIME)
 
     def test_get_top_5(self):
         objects = self.builder.get_top_5_objects()

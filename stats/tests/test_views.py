@@ -1,4 +1,5 @@
 from django.test import SimpleTestCase
+from django.conf import settings
 from stats.models import AttackedService, BlockedIP, BlockedCountry
 import time
 
@@ -15,11 +16,11 @@ class TestGetStatsViews(SimpleTestCase):
     def test_view__with_data(self):
         if not AttackedService.exists():
             AttackedService.create_table()
-            time.sleep(1)
+            time.sleep(settings.TESTING_SLEEP_TIME)
         item1 = AttackedService(key="Internal Wordpress System", count=32923)
         item1.save()
         if not BlockedIP.exists():
-            time.sleep(1)
+            time.sleep(settings.TESTING_SLEEP_TIME)
             BlockedIP.create_table()
         item2 = BlockedIP("blocked_ip_72.14.207.99",
                                key="72.14.20.99",
