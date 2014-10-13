@@ -36,7 +36,6 @@ class AttackRecorder(object):
         self.data['longitude'] = unicode(self.geo_details['longitude'])
 
         region = self.geo_details.get('region') or self.geo_details.get('city') or 'n/a'
-        print 'region = ', region
         country_name = self.geo_details.get('country_name', 'n/a')
         self.data['geo_location'] = ', '.join([region, country_name])
 
