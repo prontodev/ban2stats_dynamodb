@@ -28,8 +28,8 @@ class TestGetStatsViews(SimpleTestCase):
                                protocol='http',
                                port='80',
 
-                               longitude=-122.05740356445312,
-                               latitude=37.419200897216797,
+                               longitude="-122.05740356445312",
+                               latitude="37.419200897216797",
                                country='US',
                                geo_location='CA, United States',
 

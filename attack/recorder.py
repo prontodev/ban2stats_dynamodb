@@ -32,10 +32,13 @@ class AttackRecorder(object):
 
         self.data['country'] = self.geo_details['country_code']
         self.data['country_name'] = self.geo_details['country_name']
-        self.data['latitude'] = self.geo_details['latitude']
-        self.data['longitude'] = self.geo_details['longitude']
+        self.data['latitude'] = unicode(self.geo_details['latitude'])
+        self.data['longitude'] = unicode(self.geo_details['longitude'])
 
-        self.data['geo_location'] = ', '.join([self.geo_details['region'], self.geo_details['country_name']])
+        region = self.geo_details.get('region') or self.geo_details.get('city') or 'n/a'
+        print 'region = ', region
+        country_name = self.geo_details.get('country_name', 'n/a')
+        self.data['geo_location'] = ', '.join([region, country_name])
 
     def record_timestamp(self):
         now_timestamp = datetime.now(tz=get_current_timezone())

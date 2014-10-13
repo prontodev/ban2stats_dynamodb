@@ -18,8 +18,8 @@ class Attack(Model):
     port = UnicodeAttribute()
 
     # count = NumberAttribute(default=0)
-    longitude = NumberAttribute()
-    latitude = NumberAttribute()
+    longitude = UnicodeAttribute()
+    latitude = UnicodeAttribute()
     country = UnicodeAttribute()
     geo_location = UnicodeAttribute()
     timestamp = UTCDateTimeAttribute(range_key=True)

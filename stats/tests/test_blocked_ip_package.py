@@ -16,8 +16,8 @@ class TestBlockedIPPackage(SimpleTestCase):
                                protocol='http',
                                port='80',
 
-                               longitude=-122.05740356445312,
-                               latitude=37.419200897216797,
+                               longitude="-122.05740356445312",
+                               latitude="37.419200897216797",
                                country='US',
                                geo_location='CA, United States',
 
@@ -41,8 +41,8 @@ class TestBlockedIPPackage(SimpleTestCase):
         self.assertIn('"service_name": "Company Wordpress System"', content)
         self.assertIn('"protocol": "http"', content)
         self.assertIn('"port": "80"', content)
-        self.assertIn('"longitude": -122.05740356445312', content)
-        self.assertIn('"latitude": 37.4192', content)
+        self.assertIn('"longitude": "-122.05740356445312"', content)
+        self.assertIn('"latitude": "37.419200897216797"', content)
         self.assertIn('"country": "US"', content)
         self.assertIn('"geo_location": "CA, United States"', content)
         self.assertIn('"count": 1000', content)
@@ -57,8 +57,8 @@ class TestBlockedIPPackage(SimpleTestCase):
         self.assertIn('"service_name": "Company Wordpress System"', content)
         self.assertIn('"protocol": "http"', content)
         self.assertIn('"port": "80"', content)
-        self.assertIn('"longitude": -122.05740356445312', content)
-        self.assertIn('"latitude": 37.4192', content)
+        self.assertIn('"longitude": "-122.05740356445312"', content)
+        self.assertIn('"latitude": "37.419200897216797"', content)
         self.assertIn('"country": "US"', content)
         self.assertIn('"geo_location": "CA, United States"', content)
         self.assertIn('"count": 1000', content)

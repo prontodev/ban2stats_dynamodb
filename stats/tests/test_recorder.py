@@ -13,8 +13,8 @@ class TestStatsRecorder(SimpleTestCase):
             protocol='http',
             port='80',
 
-            longitude=111.333333,
-            latitude=222.33333,
+            longitude="111.333333",
+            latitude="222.33333",
             country='TH',
             country_name='Thailand',
             geo_location='Bangkok, Thailand'
@@ -34,8 +34,8 @@ class TestStatsRecorder(SimpleTestCase):
         self.assertEqual(banned_ip_record.protocol, 'http')
         self.assertEqual(banned_ip_record.port, '80')
         self.assertEqual(banned_ip_record.service_name, 'Company Wordpress System')
-        self.assertEqual(banned_ip_record.longitude, 111.333333)
-        self.assertEqual(banned_ip_record.latitude, 222.33333)
+        self.assertEqual(banned_ip_record.longitude, "111.333333")
+        self.assertEqual(banned_ip_record.latitude, "222.33333")
         self.assertEqual(banned_ip_record.geo_location, 'Bangkok, Thailand')
 
         self.assertEqual(banned_ip_record.count, 1)
