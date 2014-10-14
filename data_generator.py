@@ -3,8 +3,8 @@ exe_path = '/Users/chanita/projects/pronto/fail2stats_vagrant/ban2stats/client/w
 ip = '72.14.207.100'
 
 
-def attack(ip):
-    command_arguments = [exe_path,  "TestHits", "http", "80", ip]
+def attack(ip, service_name):
+    command_arguments = [exe_path,  service_name, "https", "81", ip]
     process = subprocess.Popen(command_arguments, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     (output, err) = process.communicate()
     exit_code = process.wait()
@@ -16,9 +16,13 @@ def attack(ip):
         command_output = output
     print result, command_output
 
-for i in range(188,199):
-    ip = '91.227.{0}.23'.format(i)
-    attack(ip)
+for i in range(172,190):
+    ip = '114.82.{0}.3'.format(i)
+    attack(ip, 'Evil Service')
+
+for i in range(2,190):
+    ip = '114.{0}.19.3'.format(i)
+    attack(ip, 'Company Portal')
 
 
 
