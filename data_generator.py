@@ -24,55 +24,26 @@ for i in range(2,190):
     ip = '114.{0}.19.3'.format(i)
     attack(ip, 'Company Portal')
 
+for i in range(33, 40):
+    ip = '114.48.19.{0}'.format(i)
+    attack(ip, 'Human Resource Control Portal')
 
+for i in range(20, 133):
+    ip = '114.48.20.{0}'.format( i)
+    attack(ip, 'Financial Department Portal')
+for i in range(80, 133):
 
-# import time
-# if not AttackedService.exists():
-#     AttackedService.create_table()
-#     time.sleep(settings.TESTING_SLEEP_TIME)
-# item1 = AttackedService(key="Internal Wordpress System", count=32923)
-# item1.save()
-# item1_1 = AttackedService(key="Mail Server", count=300)
-# item1_1.save()
-# item1_2 = AttackedService(key="Company Secured Server", count=127563)
-# item1_2.save()
-#
-# if not BlockedIP.exists():
-#     time.sleep(settings.TESTING_SLEEP_TIME)
-#     BlockedIP.create_table()
-# item2 = BlockedIP("blocked_ip_72.14.207.99",
-#                        key="72.14.20.99",
-#                        service_name='Company Wordpress System',
-#                        protocol='http',
-#                        port='80',
-#
-#                        longitude=-122.05740356445312,
-#                        latitude=37.419200897216797,
-#                        country='US',
-#                        geo_location='CA, United States',
-#
-#                        count=1000,
-#                        last_seen='2014-09-27T08:49:28.556775+0000'
-#                        )
-# item2.save()
-#
-# item1.delete()
-# item1_1.delete()
-# item1_2.delete()
-# item2.delete()
-#
-# if not BlockedCountry.exists():
-#     BlockedCountry.create_table()
-# time.sleep(settings.TESTING_SLEEP_TIME)
-# item1 = BlockedCountry("blocked_country", key='US', country_name='United States', count=22)
-# item1.save()
-# item2 = BlockedCountry("blocked_country", key='TH', country_name='Thailand', count=3000)
-# item2.save()
-# item3 = BlockedCountry("blocked_country", key='SG', country_name='Singapore', count=12094)
-# item3.save()
-# item4 = BlockedCountry("blocked_country", key='AL', country_name='Albania', count=3)
-# item4.save()
-# item5 = BlockedCountry("blocked_country", key='MA', country_name='Morocco', count=34123)
-# item5.save()
-# item6 = BlockedCountry("blocked_country", key='PE', country_name='Peru', count=50)
-# item6.save()
+    ip = '114.48.20.{0}'.format( i)
+    attack(ip, 'Financial Department Portal')
+for i in range(123, 133):
+    ip = '114.48.20.{0}'.format( i)
+    attack(ip, 'Financial Department Portal')
+for i in range(12, 40):
+    ip = '114.109.188.{0}'.format( i)
+    attack(ip, 'Financial Department Portal')
+for i in range(12, 99):
+    ip = '72.14.20.{0}'.format( i)
+    attack(ip, 'Financial Department Portal')
+for i in range(12, 99):
+    ip = '72.14.12.{0}'.format( i)
+    attack(ip, 'Human Resource Control Portal')
