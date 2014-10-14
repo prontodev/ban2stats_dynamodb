@@ -22,7 +22,7 @@ class TestStatsRecorder(SimpleTestCase):
         self.recorder = StatsRecorder(self.attack_data)
 
         self.attack_data2 = dict(
-            attacker_ip='127.0.0.1',
+            attacker_ip='127.0.0.2',
             service_name='Back office service',
             protocol='http',
             port='80',
@@ -57,6 +57,9 @@ class TestStatsRecorder(SimpleTestCase):
 
         banned_ip_record_2 = self.recorder.save_banned_ip_record()
         self.assertEqual(banned_ip_record_2.count, 2)
+
+        banned_ip_record_3 = self.recorder2.save_banned_ip_record()
+        self.assertEqual(banned_ip_record_3.count, 1)
 
     def test_save_attacked_service_success(self):
 
