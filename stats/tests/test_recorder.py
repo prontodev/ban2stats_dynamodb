@@ -21,6 +21,20 @@ class TestStatsRecorder(SimpleTestCase):
         )
         self.recorder = StatsRecorder(self.attack_data)
 
+        self.attack_data2 = dict(
+            attacker_ip='127.0.0.1',
+            service_name='Back office service',
+            protocol='http',
+            port='80',
+
+            longitude="111.333333",
+            latitude="222.33333",
+            country='RU',
+            country_name='Russia',
+            geo_location='n/a, Russia'
+        )
+        self.recorder2 = StatsRecorder(self.attack_data2)
+
     def tearDown(self):
         time.sleep(settings.TESTING_SLEEP_TIME)
         self.recorder.delete_table()
@@ -44,7 +58,7 @@ class TestStatsRecorder(SimpleTestCase):
         banned_ip_record_2 = self.recorder.save_banned_ip_record()
         self.assertEqual(banned_ip_record_2.count, 2)
 
-    def test_save_attacked_protocol_success(self):
+    def test_save_attacked_service_success(self):
 
         attacked_protocol_record = self.recorder.save_attacked_service_record()
         self.assertEqual(attacked_protocol_record.category, 'attacked_service')
@@ -56,9 +70,22 @@ class TestStatsRecorder(SimpleTestCase):
         self.assertEqual(attacked_protocol_record_2.key, 'Company Wordpress System')
         self.assertEqual(attacked_protocol_record_2.count, 2)
 
+        attacked_protocol_record_3 = self.recorder2.save_attacked_service_record()
+        self.assertEqual(attacked_protocol_record_3.category, 'attacked_service')
+        self.assertEqual(attacked_protocol_record_3.key, 'Back office service')
+        self.assertEqual(attacked_protocol_record_3.count, 1)
+
     def test_save_blocked_country_success(self):
         blocked_country_record = self.recorder.save_blocked_country_record()
         self.assertEqual(blocked_country_record.category, 'blocked_country')
         self.assertEqual(blocked_country_record.key, 'TH')
         self.assertEqual(blocked_country_record.country_name, 'Thailand')
         self.assertEqual(blocked_country_record.count, 1)
+
+
+        self.recorder = StatsRecorder(self.attack_data2)
+        blocked_country_record2 = self.recorder.save_blocked_country_record()
+        self.assertEqual(blocked_country_record2.category, 'blocked_country')
+        self.assertEqual(blocked_country_record2.key, 'RU')
+        self.assertEqual(blocked_country_record2.country_name, 'Russia')
+        self.assertEqual(blocked_country_record2.count, 1)
