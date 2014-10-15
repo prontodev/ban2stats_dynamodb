@@ -47,7 +47,7 @@ class TestGetAttackedServiceStats(SimpleTestCase):
         self.assertIn(expected_content, content)
         expected_content = u'''["Company Secured Server", 127563]'''
         self.assertIn(expected_content, content)
-        expected_content = u'''var attacked_services = ['''
+        expected_content = u'''"attacked_services": ['''
         self.assertIn(expected_content, content)
-        expected_content = u'''];'''
+        expected_content = u''']'''
         self.assertIn(expected_content, content)

@@ -42,7 +42,7 @@ class AttackedServicePackageBuilder(PackageBuilder):
 
     def render_as_javascript(self):
         template = """
-        var attacked_services = {0};"""
+        "attacked_services": {0}"""
         return template.format(self.render_all_objects_as_list())
 
 
@@ -77,8 +77,9 @@ class BlockedIPPackageBuilder(PackageBuilder):
 
     def render_as_javascript(self):
         template = """
-        var blocked_ips = {0};\n
-        var blocked_ip_count = "{1}";"""
+        "blocked_ips": {0},\n
+        "blocked_ip_count": "{1}"
+        """
         return template.format(self.render_all_objects_as_list(), self.objects_count_as_string(len(self.objects)))
 
 
@@ -111,16 +112,19 @@ class BlockedCountryPackageBuilder(PackageBuilder):
 
     def render_as_javascript(self):
         template = """
-        var blocked_countries = {0};"""
+        "blocked_countries": {0}"""
         return template.format(self.render_all_objects_as_list())
 
 
 def get_stats(request):
-    content = ""
-    content += "\n"
+    content = "{"
+    content += '\n'
     content += BlockedIPPackageBuilder().render_as_javascript()
-    content += "\n"
+    content += ",\n"
     content += AttackedServicePackageBuilder().render_as_javascript()
-    content += "\n"
+    content += ",\n"
     content += BlockedCountryPackageBuilder().render_as_javascript()
-    return HttpResponse(content, content_type="application/javascript")
+    content += "\n}"
+    response = HttpResponse(content, content_type="application/json")
+    response["Access-Control-Allow-Origin"] = "*"
+    return response

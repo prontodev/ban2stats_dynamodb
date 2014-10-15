@@ -8,10 +8,10 @@ class TestGetStatsViews(SimpleTestCase):
 
     def test_view__no_data(self):
         response = self.client.get('/stats/')
-        self.assertContains(response, 'var blocked_ip_count = ')
-        self.assertContains(response, 'var blocked_countries = [')
-        self.assertContains(response, 'var blocked_ips = [')
-        self.assertContains(response, 'var attacked_services = [')
+        self.assertContains(response, '"blocked_ip_count":')
+        self.assertContains(response, '"blocked_countries": [')
+        self.assertContains(response, '"blocked_ips": [')
+        self.assertContains(response, '"attacked_services": [')
 
     def test_view__with_data(self):
         if not AttackedService.exists():
@@ -53,10 +53,10 @@ class TestGetStatsViews(SimpleTestCase):
         item6.save()
 
         response = self.client.get('/stats/')
-        self.assertContains(response, 'var blocked_ip_count = ')
-        self.assertContains(response, 'var blocked_countries = [')
-        self.assertContains(response, 'var blocked_ips = [')
-        self.assertContains(response, 'var attacked_services = [')
+        self.assertContains(response, '"blocked_ip_count": ')
+        self.assertContains(response, '"blocked_countries": [')
+        self.assertContains(response, '"blocked_ips": [')
+        self.assertContains(response, '"attacked_services": [')
 
         AttackedService.delete_table()
         BlockedCountry.delete_table()

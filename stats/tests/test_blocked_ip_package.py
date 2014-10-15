@@ -70,6 +70,6 @@ class TestBlockedIPPackage(SimpleTestCase):
 
     def test_render_javascript(self):
         content = self.blocked_ips_builder.render_as_javascript()
-        self.assertIn('var blocked_ips = [', content)
-        self.assertIn('];', content)
-        self.assertIn('var blocked_ip_count = "1";', content)
+        self.assertIn('"blocked_ips": [', content)
+        self.assertIn('],', content)
+        self.assertIn('"blocked_ip_count": "1"', content)

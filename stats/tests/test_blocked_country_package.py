@@ -57,5 +57,5 @@ class TestBlockedCountryPackageBuilder(SimpleTestCase):
     def test_render_as_javascript(self):
         content = self.builder.render_as_javascript()
 
-        expected_content = u'''];'''
+        expected_content = u''']'''
         self.assertIn(expected_content, content)
