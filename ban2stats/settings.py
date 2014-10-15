@@ -90,5 +90,6 @@ GEOIP_PATH = os.path.join(BASE_DIR, 'geo_data')
 
 BAN2STATS_SERVICE_TOKEN = 'oTbCmV71i2Lg5wQMSsPEFKGJ0Banana'
 DYNAMODB_HOST = 'http://localhost:4567'
+# DYNAMODB_HOST = ''
 DYNAMODB_REGION = 'ap-southeast-1'
 TESTING_SLEEP_TIME = 1
