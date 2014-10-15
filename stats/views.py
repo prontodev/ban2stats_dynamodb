@@ -60,6 +60,8 @@ class BlockedIPPackageBuilder(PackageBuilder):
         return blocked_ip_list
 
     def format_last_seen_string(self, last_seen_raw):
+        if last_seen_raw is None:
+            return 'n/a'
         last_seen_datetime = parse(last_seen_raw)
         return last_seen_datetime.strftime("%b %d, %Y %H:%M:%S %z")
 
