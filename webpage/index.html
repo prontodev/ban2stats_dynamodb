@@ -124,33 +124,9 @@
     <script src="js/bootstrap.min.js"></script>
     <script src="js/d3.min.js"></script>
     <script src="js/c3.min.js"></script>
-    <script src="http://localhost:8001/stats/"></script>
-    <script type="text/javascript">
-    var chart = c3.generate({
-        bindto: '#attacktypes',
-        data: {
-            columns: attacked_services,
-            type : 'donut',
-        },
-        donut: {
-            title: "Attack Protocols"
-        }
-    });
-    </script>
+
+
     <script src="https://maps.googleapis.com/maps/api/js"></script>
-
-    <script type="text/javascript">
-        $("#blocked-ip-count").html(blocked_ip_count);
-
-        var tbody = $("#tbody-blocked-countries");
-        var each_country_html;
-        $.each(blocked_countries, function(index, item){
-            each_country_html = "<tr><td>"+ item.country_name + "</td><td class='text-right'>" + item.count +"</td></tr>"
-            tbody.append($(each_country_html));
-
-        })
-
-    </script>
     <script>
       var script = '<script type="text/javascript" src="./js/markerclusterer';
       if (document.location.search.indexOf('compiled') !== -1) {
@@ -159,128 +135,33 @@
       script += '.js"><' + '/script>';
       document.write(script);
     </script>
-
-    <script>
-      function initialize() {
-        var center = new google.maps.LatLng(25,0);
-
-        var map = new google.maps.Map(document.getElementById('map'), {
-          zoom: 2,
-          center: center,
-          disableDefaultUI: true,
-          mapTypeId: google.maps.MapTypeId.ROADMAP,
-          panControl: true,
-          zoomControl: true,
-          mapTypeControl: false,
-          scaleControl: true,
-          overviewMapControl: true,
-          styles: [
-    {
-        "stylers": [
-            {
-                "visibility": "off"
-            }
-        ]
-    },
-    {
-        "featureType": "road",
-        "stylers": [
-            {
-                "visibility": "on"
+    <script type="text/javascript">
+        var chart;
+        var blocked_ip_count;
+        var blocked_countries;
+        var blocked_ips;
+        var attacked_services;
+        function render_attacked_services_diagram(attacked_services_data){
+            chart = c3.generate({
+            bindto: '#attacktypes',
+            data: {
+                columns: attacked_services_data,
+                type : 'donut'
             },
-            {
-                "color": "#ffffff"
+            donut: {
+                title: "Attack Services"
             }
-        ]
-    },
-    {
-        "featureType": "road.arterial",
-        "stylers": [
-            {
-                "visibility": "on"
-            },
-            {
-                "color": "#fee379"
-            }
-        ]
-    },
-    {
-        "featureType": "road.highway",
-        "stylers": [
-            {
-                "visibility": "on"
-            },
-            {
-                "color": "#fee379"
-            }
-        ]
-    },
-    {
-        "featureType": "landscape",
-        "stylers": [
-            {
-                "visibility": "on"
-            },
-            {
-                "color": "#08304b"
-            }
-        ]
-    },
-    {
-        "featureType": "water",
-        "stylers": [
-            {
-                "visibility": "on"
-            },
-            {
-                "color": "#021019"
-            }
-        ]
-    },
-    {},
-    {
-        "featureType": "road",
-        "elementType": "labels",
-        "stylers": [
-            {
-                "visibility": "off"
-            }
-        ]
-    },
-    {
-        "featureType": "poi.park",
-        "elementType": "geometry.fill",
-        "stylers": [
-            {
-                "visibility": "on"
-            },
-            {
-                "color": "#83cead"
-            }
-        ]
-    },
-    {
-        "elementType": "labels",
-        "stylers": [
-            {
-                "visibility": "off"
-            }
-        ]
-    },
-    {
-        "featureType": "landscape.man_made",
-        "elementType": "geometry",
-        "stylers": [
-            {
-                "weight": 0.9
-            },
-            {
-                "visibility": "off"
-            }
-        ]
-    }
-]
-        });
+          });
+        }
+        function render_blocked_countries(blocked_countries_data){
+            $("#blocked-ip-count").html(blocked_ip_count);
+            var tbody = $("#tbody-blocked-countries");
+            var each_country_html;
+            $.each(blocked_countries_data, function(index, item){
+                each_country_html = "<tr><td>"+ item.country_name + "</td><td class='text-right'>" + item.count +"</td></tr>"
+                tbody.append($(each_country_html));
+            })
+        }
         function build_info_window(marker, blocked_ip_data){
             var html = "<b>"+blocked_ip_data.service_name + " Attack</b>";
             html += "<br />Last seen: " + blocked_ip_data.last_seen +
@@ -298,21 +179,44 @@
             });
         }
 
+        var map;
         var markers = [];
-        $.each(blocked_ips, function(index, blocked_ip) {
-          var latLng = new google.maps.LatLng(blocked_ip.latitude, blocked_ip.longitude);
-          var marker = new google.maps.Marker({position: latLng});
-          markers.push(marker);
-          build_info_window(marker, blocked_ip);
+        var markerClusterOptions = {
+          gridSize: 80, maxZoom: 15
+        };
+        var oldinfowindow=null;
 
-        });
-        var markerCluster = new MarkerClusterer(map, markers);
-      }
-      var oldinfowindow=null;
+        function render_blocked_ips(){
+            $.each(blocked_ips, function(index, blocked_ip) {
+              var latLng = new google.maps.LatLng(blocked_ip.latitude, blocked_ip.longitude);
+              var marker = new google.maps.Marker({position: latLng});
+              markers.push(marker);
+              build_info_window(marker, blocked_ip);
+            });
+            var markerCluster = new MarkerClusterer(map, markers, markerClusterOptions);
+        }
+        function initialize() {
+            $.getJSON( "http://localhost:8000/stats/", function( data ) {
+              blocked_ip_count = data.blocked_ip_count;
+              blocked_countries = data.blocked_countries;
+              blocked_ips = data.blocked_ips;
+              attacked_services = data.attacked_services;
+              render_attacked_services_diagram(attacked_services);
+              render_blocked_countries(blocked_countries);
+              render_blocked_ips(blocked_ips);
+            });
+
+            var center = new google.maps.LatLng(25,0);
+            map = new google.maps.Map(document.getElementById('map'), {
+              zoom: 2,
+              center: center,
+              mapTypeId: google.maps.MapTypeId.ROADMAP
+            });
+        } //initialize
+
       google.maps.event.addDomListener(window, 'load', initialize);
-
-
-
     </script>
+
+
 </body>
 </html>
