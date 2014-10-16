@@ -9,7 +9,7 @@ class CountIndex(LocalSecondaryIndex):
     class Meta:
         projection = AllProjection()
         index_name = "count_index"
-        region = 'ap-southeast-1'
+        region = settings.DYNAMODB_REGION
         host = settings.DYNAMODB_HOST
 
     category = UnicodeAttribute(hash_key=True)
@@ -37,8 +37,8 @@ class BlockedIP(Model):
     class Meta:
         read_capacity_units = settings.DYNAMO_MODEL_READ_CAPACITY_UNITS
         write_capacity_units = settings.DYNAMO_MODEL_WRITE_CAPACITY_UNITS
-        table_name = 'Ban2Stats_Stats'
-        region = 'ap-southeast-1'
+        table_name = settings.STATS_TABLE_NAME
+        region = settings.DYNAMODB_REGION
         host = settings.DYNAMODB_HOST
 
 
@@ -51,8 +51,8 @@ class AttackedService(Model):
     class Meta:
         read_capacity_units = settings.DYNAMO_MODEL_READ_CAPACITY_UNITS
         write_capacity_units = settings.DYNAMO_MODEL_WRITE_CAPACITY_UNITS
-        table_name = 'Ban2Stats_Stats'
-        region = 'ap-southeast-1'
+        table_name = settings.STATS_TABLE_NAME
+        region = settings.DYNAMODB_REGION
         host = settings.DYNAMODB_HOST
 
 
@@ -67,6 +67,6 @@ class BlockedCountry(Model):
     class Meta:
         read_capacity_units = settings.DYNAMO_MODEL_READ_CAPACITY_UNITS
         write_capacity_units = settings.DYNAMO_MODEL_WRITE_CAPACITY_UNITS
-        table_name = 'Ban2Stats_Stats'
+        table_name = settings.STATS_TABLE_NAME
         region = settings.DYNAMODB_REGION
         host = settings.DYNAMODB_HOST
