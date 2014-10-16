@@ -1,4 +1,4 @@
-from data_generator import attack
+from ban2stats.data_generator.data_generator import attack
 
 for i in range(83, 133):
     ip = '114.48.20.{0}'.format( i)
