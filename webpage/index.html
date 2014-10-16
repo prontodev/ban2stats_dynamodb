@@ -196,7 +196,7 @@
             var markerCluster = new MarkerClusterer(map, markers, markerClusterOptions);
         }
         function initialize() {
-            $.getJSON( "http://localhost:8000/stats/", function( data ) {
+            $.getJSON( "http://http://172.19.30.27:8002/stats/", function( data ) {
               blocked_ip_count = data.blocked_ip_count;
               blocked_countries = data.blocked_countries;
               blocked_ips = data.blocked_ips;
