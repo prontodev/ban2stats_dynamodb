@@ -2,8 +2,9 @@ from attack.models import Attack
 from stats.models import BlockedIP
 
 
-Attack.load('attack.json')
-print 'Loaded attacks'
+def load_all():
+    Attack.load('ban2stats/sample_data/attack.json')
+    print 'Loaded attacks'
 
-BlockedIP.load('stats.json')
-print 'Loaded stats'
+    BlockedIP.load('ban2stats/sample_data/stats.json')
+    print 'Loaded stats'
