@@ -8,7 +8,7 @@ class Attack(Model):
         read_capacity_units = settings.DYNAMO_MODEL_READ_CAPACITY_UNITS
         write_capacity_units = settings.DYNAMO_MODEL_WRITE_CAPACITY_UNITS
         table_name = settings.ATTACK_TABLE_NAME
-        region = 'ap-southeast-1'
+        region = settings.DYNAMODB_REGION
         host = settings.DYNAMODB_HOST
 
     attacker_ip = UnicodeAttribute(hash_key=True)
