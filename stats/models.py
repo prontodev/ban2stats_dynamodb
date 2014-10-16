@@ -35,8 +35,8 @@ class BlockedIP(Model):
     geo_location = UnicodeAttribute()
 
     class Meta:
-        read_capacity_units = 4
-        write_capacity_units = 4
+        read_capacity_units = settings.DYNAMO_MODEL_READ_CAPACITY_UNITS
+        write_capacity_units = settings.DYNAMO_MODEL_WRITE_CAPACITY_UNITS
         table_name = 'Ban2Stats_Stats'
         region = 'ap-southeast-1'
         host = settings.DYNAMODB_HOST
@@ -49,8 +49,8 @@ class AttackedService(Model):
     count = NumberAttribute(default=0)
 
     class Meta:
-        read_capacity_units = 4
-        write_capacity_units = 4
+        read_capacity_units = settings.DYNAMO_MODEL_READ_CAPACITY_UNITS
+        write_capacity_units = settings.DYNAMO_MODEL_WRITE_CAPACITY_UNITS
         table_name = 'Ban2Stats_Stats'
         region = 'ap-southeast-1'
         host = settings.DYNAMODB_HOST
@@ -65,8 +65,8 @@ class BlockedCountry(Model):
     count = NumberAttribute(default=0)
 
     class Meta:
-        read_capacity_units = 4
-        write_capacity_units = 4
+        read_capacity_units = settings.DYNAMO_MODEL_READ_CAPACITY_UNITS
+        write_capacity_units = settings.DYNAMO_MODEL_WRITE_CAPACITY_UNITS
         table_name = 'Ban2Stats_Stats'
         region = settings.DYNAMODB_REGION
         host = settings.DYNAMODB_HOST
