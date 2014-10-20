@@ -154,7 +154,7 @@
           });
         }
         function render_blocked_countries(blocked_countries_data){
-            $("#blocked-ip-count").html(blocked_ip_count);
+
             var tbody = $("#tbody-blocked-countries");
             var each_country_html;
             $.each(blocked_countries_data, function(index, item){
@@ -163,7 +163,6 @@
             })
         }
         function build_info_window(marker, blocked_ip_data){
-            console.log( '*' + blocked_ip_data[2])
             var html = blocked_ip_data[2] + "<br/>" ;
 
             $.each(blocked_ip_data[3], function(index, each_attack){
@@ -194,8 +193,10 @@
         var oldinfowindow=null;
 
         function render_blocked_ips(){
+            var ip_counter = 0;
             $.each(blocked_ips, function(index, each_pin) {
                 $.each(each_pin, function(index2, each_ip){
+                    ip_counter = ip_counter + 1;
                     var latLng = new google.maps.LatLng(each_pin[0], each_pin[1]);
                     var marker = new google.maps.Marker({position: latLng});
                     markers.push(marker);
@@ -203,17 +204,23 @@
                 });
 
             });
+            blocked_ip_count = ip_counter
+            $("#blocked-ip-count").html(blocked_ip_count);
             var markerCluster = new MarkerClusterer(map, markers, markerClusterOptions);
         }
         function initialize() {
-            $.getJSON( "http://localhost:8000/stats/", function( data ) {
-              blocked_ip_count = data.blocked_ip_count;
-              blocked_countries = data.blocked_countries;
-              blocked_ips = data.blocked_ips;
-              attacked_services = data.attacked_services;
-              render_attacked_services_diagram(attacked_services);
+            $.getJSON( "http://localhost:8000/stats/blocked_ips/", function( data ) {
+              blocked_ips = data;
+              render_blocked_ips(data);
+
+            });
+            $.getJSON( "http://localhost:8000/stats/blocked_countries/", function( data ) {
+              blocked_countries = data;
               render_blocked_countries(blocked_countries);
-              render_blocked_ips(blocked_ips);
+            });
+            $.getJSON( "http://localhost:8000/stats/attacked_services/", function( data ) {
+              attacked_services = data;
+              render_attacked_services_diagram(attacked_services);
             });
 
             var center = new google.maps.LatLng(25,0);

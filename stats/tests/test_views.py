@@ -35,7 +35,7 @@ class TestGetStatsViews(SimpleTestCase):
         item1.save()
 
         attack_details = """
-        [{"ip":"127.0.0.1","service_name":"Company Wordpress System","protocol":"http","port":"80","count":1000,"last_seen":"2014-09-27T08:49:28.556775+0000"}]
+        {"127.0.0.1":{"service_name":"Company Wordpress System","protocol":"http","port":"80","count":1000,"last_seen":"2014-09-27T08:49:28.556775+0000"}}
         """
         item2 = BlockedIP(lat_lon = "37.419200897216797,-122.05740356445312",
                           attack_details= attack_details,
