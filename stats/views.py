@@ -3,6 +3,7 @@ from stats.packages.attacked_service import AttackedServicePackageBuilder
 from stats.packages.blocked_ip import BlockedIPPackageBuilder
 from stats.packages.blocked_country import BlockedCountryPackageBuilder
 
+
 def get_stats(request):
     content = "{"
     content += '\n'
