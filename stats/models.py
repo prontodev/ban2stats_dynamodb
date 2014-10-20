@@ -1,23 +1,13 @@
 from pynamodb.models import Model
 from pynamodb.attributes import UnicodeAttribute, NumberAttribute
-from pynamodb.indexes import LocalSecondaryIndex, AllProjection, GlobalSecondaryIndex
+from pynamodb.indexes import LocalSecondaryIndex, AllProjection
 from django.conf import settings
-from django.utils.timezone import get_current_timezone
-import json
-from datetime import datetime
 
 
 class BlockedIP(Model):
 
     lat_lon = UnicodeAttribute(hash_key=True)
     attack_details = UnicodeAttribute(default="[]")
-    # ip_list = UnicodeAttribute(range_key=True)
-    # service_name = UnicodeAttribute()
-    # protocol = UnicodeAttribute()
-    # port = UnicodeAttribute()
-    #
-    # count = NumberAttribute(default=0)
-    # last_seen = UnicodeAttribute()
 
     country = UnicodeAttribute()
     geo_location = UnicodeAttribute()
