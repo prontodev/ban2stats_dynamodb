@@ -8,12 +8,9 @@ class BlockedCountryPackageBuilder(PackageBuilder):
     def get_top_5_objects(self):
         if not BlockedCountry.exists():
             return []
-        try:
-            blocked_country_objects = BlockedCountry.scan(limit=5, index='count_index', scan_index_forward=False)
-        except ValueError:
-            blocked_country_objects = BlockedCountry.count_index.query(limit=5, scan_index_forward=False)
-
-        objects_as_list = self.put_objects_to_list(blocked_country_objects)
+        blocked_country_objects = BlockedCountry.scan()
+        sort_filter = lambda item: item.count
+        objects_as_list = sorted(blocked_country_objects, key=sort_filter, reverse=True)
         if len(objects_as_list) < 5:
             return objects_as_list
         return objects_as_list[:5]
