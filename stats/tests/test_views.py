@@ -6,6 +6,23 @@ import time
 
 class TestGetStatsViews(SimpleTestCase):
 
+    def setUp(self):
+        if not AttackedService.exists():
+            AttackedService.create_table(wait=True)
+            time.sleep(settings.TESTING_SLEEP_TIME)
+        if not BlockedIP.exists():
+            BlockedIP.create_table(wait=True)
+            time.sleep(settings.TESTING_SLEEP_TIME)
+        if not BlockedCountry.exists():
+            BlockedCountry.create_table(wait=True)
+            time.sleep(settings.TESTING_SLEEP_TIME)
+
+    def tearDown(self):
+        BlockedIP.delete_table()
+        AttackedService.delete_table()
+        BlockedCountry.delete_table()
+        time.sleep(settings.TESTING_SLEEP_TIME)
+
     def test_view__no_data(self):
         response = self.client.get('/stats/')
         self.assertContains(response, '"blocked_ip_count":')
@@ -14,16 +31,11 @@ class TestGetStatsViews(SimpleTestCase):
         self.assertContains(response, '"attacked_services": [')
 
     def test_view__with_data(self):
-        if not AttackedService.exists():
-            AttackedService.create_table()
-            time.sleep(settings.TESTING_SLEEP_TIME)
         item1 = AttackedService(service_name="Internal Wordpress System", count=32923)
         item1.save()
-        if not BlockedIP.exists():
-            time.sleep(settings.TESTING_SLEEP_TIME)
-            BlockedIP.create_table()
+
         attack_details = """
-        [{{"ip":"127.0.0.1","service_name":"Company Wordpress System","protocol":"http","port":"80","count":1000,"last_seen":"2014-09-27T08:49:28.556775+0000"}}]
+        [{"ip":"127.0.0.1","service_name":"Company Wordpress System","protocol":"http","port":"80","count":1000,"last_seen":"2014-09-27T08:49:28.556775+0000"}]
         """
         item2 = BlockedIP(lat_lon = "37.419200897216797,-122.05740356445312",
                           attack_details= attack_details,
@@ -31,8 +43,7 @@ class TestGetStatsViews(SimpleTestCase):
                           geo_location='CA, United States'
                           )
         item2.save()
-        if not BlockedCountry.exists():
-            BlockedCountry.create_table()
+
         item1 = BlockedCountry("blocked_country", key='US', country_name='United States', count=22)
         item1.save()
         item2 = BlockedCountry("blocked_country", key='TH', country_name='Thailand', count=3000)
@@ -51,6 +62,3 @@ class TestGetStatsViews(SimpleTestCase):
         self.assertContains(response, '"blocked_countries": [')
         self.assertContains(response, '"blocked_ips": [')
         self.assertContains(response, '"attacked_services": [')
-
-        AttackedService.delete_table()
-        BlockedCountry.delete_table()
