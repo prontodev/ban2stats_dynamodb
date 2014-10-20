@@ -36,9 +36,11 @@ class BlockedIPPackageBuilderMinimized(PackageBuilder):
         all_attack_details_as_dict = json.loads(all_attack_details_as_string)
         output_list = []
         attack_details_without_count = all_attack_details_as_dict.copy()
-        attack_details_without_count.pop(u'count')
+        try:
+            attack_details_without_count.pop(u'count')
+        except KeyError:
+            pass
         for ip, details in attack_details_without_count.items():
-            print 'ip, details = ' , ip , details
             data = {'ip': ip}
             data.update(details)
             output_list.append(self.render_each_attack_details(data))
