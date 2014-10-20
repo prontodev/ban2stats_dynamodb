@@ -163,12 +163,13 @@
             })
         }
         function build_info_window(marker, blocked_ip_data){
-            var html = ""
-            $.each(blocked_ip_data.attack_details, function(each_attack){
-            html += "<b>"+each_attack.service_name + " Attack</b>" +
+            var html = blocked_ip_data.geo_location + "<br/>" ;
+
+            $.each(blocked_ip_data.attack_details, function(index, each_attack){
+                html += "<b>"+each_attack.service_name + " Attack</b>" +
                     "<br />Last seen: " + each_attack.last_seen +
                     "<br/> Ban count: " + each_attack.count +
-                    "<br/> " + each_attack.geo_location +
+
                     "<br/> " + each_attack.ip + "<br/>";
                 });
 
@@ -200,7 +201,7 @@
             var markerCluster = new MarkerClusterer(map, markers, markerClusterOptions);
         }
         function initialize() {
-            $.getJSON( "/stats_data.js", function( data ) {
+            $.getJSON( "/stats_data.json", function( data ) {
               blocked_ip_count = data.blocked_ip_count;
               blocked_countries = data.blocked_countries;
               blocked_ips = data.blocked_ips;
