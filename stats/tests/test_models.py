@@ -10,7 +10,6 @@ from pynamodb.exceptions import TableDoesNotExist
 class TestModel(SimpleTestCase):
 
     def tearDown(self):
-        BlockedIP.delete_table()
         time.sleep(settings.TESTING_SLEEP_TIME)
 
     def test_BlockedIP_simple_model_usage(self):
@@ -23,22 +22,18 @@ class TestModel(SimpleTestCase):
             print 'Raised TableDoesNotExist'
             BlockedIP.create_table(wait=True)
 
+        attack_details = """
+        [{{"ip":"127.0.0.1","service_name":"company web server","protocol":"http","port":"80","count":0,"last_seen":"{0}"}}]
+        """.format(now_timestamp)
         blocked_ip = BlockedIP(
-                        category='blocked_ip_127.0.0.1',
-                        key='127.0.0.1',
-                        service_name='company web server',
-                        protocol='http',
-                        port='80',
-                        count=0,
-                        last_seen=now_timestamp,
-
-                        longitude="111.333333",
-                        latitude="222.33333",
+                        lat_lon = "222.33333,111.333333",
+                        attack_details= attack_details,
                         country='TH',
                         geo_location='Bangkok, Thailand')
         blocked_ip.save()
-        # BlockedIP.delete_table()
+        BlockedIP.delete_table()
 
+    def test_attacked_service_model(self):
         try:
             AttackedService.create_table(wait=True)
         except TableDoesNotExist:
@@ -47,9 +42,12 @@ class TestModel(SimpleTestCase):
             AttackedService.create_table(wait=True)
 
         attacked_protocol = AttackedService(
-                        key='Wordpress HTTP',
+                        service_name='Wordpress HTTP',
                         count=1)
         attacked_protocol.save()
+        AttackedService.delete_table()
+
+    def test_blocked_country_model(self):
 
         try:
             BlockedCountry.create_table(wait=True)
@@ -59,7 +57,8 @@ class TestModel(SimpleTestCase):
             BlockedCountry.create_table(wait=True)
 
         blocked_country = BlockedCountry(
-                        key='TH',
+                        country_code='TH',
                         country_name='Thailand',
                         count=1)
         blocked_country.save()
+        BlockedCountry.delete_table()

@@ -11,10 +11,10 @@ class TestGetAttackedServiceStats(SimpleTestCase):
         if not AttackedService.exists():
             AttackedService.create_table()
             time.sleep(settings.TESTING_SLEEP_TIME)
-        self.item1 = AttackedService(key="Internal Wordpress System", count=32923, category='attacked_service')
+        self.item1 = AttackedService(service_name="Internal Wordpress System", count=32923)
         self.item1.save()
-        AttackedService(key="Mail Server", count=300).save()
-        AttackedService(key="Company Secured Server", count=127563).save()
+        AttackedService(service_name="Mail Server", count=300).save()
+        AttackedService(service_name="Company Secured Server", count=127563).save()
         self.attacked_services = AttackedServicePackageBuilder()
 
     def tearDown(self):
