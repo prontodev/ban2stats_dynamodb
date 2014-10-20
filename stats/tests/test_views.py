@@ -17,25 +17,19 @@ class TestGetStatsViews(SimpleTestCase):
         if not AttackedService.exists():
             AttackedService.create_table()
             time.sleep(settings.TESTING_SLEEP_TIME)
-        item1 = AttackedService(key="Internal Wordpress System", count=32923)
+        item1 = AttackedService(service_name="Internal Wordpress System", count=32923)
         item1.save()
         if not BlockedIP.exists():
             time.sleep(settings.TESTING_SLEEP_TIME)
             BlockedIP.create_table()
-        item2 = BlockedIP("blocked_ip_72.14.207.99",
-                               key="72.14.20.99",
-                               service_name='Company Wordpress System',
-                               protocol='http',
-                               port='80',
-
-                               longitude="-122.05740356445312",
-                               latitude="37.419200897216797",
-                               country='US',
-                               geo_location='CA, United States',
-
-                               count=1000,
-                               last_seen='2014-09-27T08:49:28.556775+0000'
-                               )
+        attack_details = """
+        [{{"ip":"127.0.0.1","service_name":"Company Wordpress System","protocol":"http","port":"80","count":1000,"last_seen":"2014-09-27T08:49:28.556775+0000"}}]
+        """
+        item2 = BlockedIP(lat_lon = "37.419200897216797,-122.05740356445312",
+                          attack_details= attack_details,
+                          country='US',
+                          geo_location='CA, United States'
+                          )
         item2.save()
         if not BlockedCountry.exists():
             BlockedCountry.create_table()
