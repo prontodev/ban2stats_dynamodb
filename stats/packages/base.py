@@ -14,9 +14,11 @@ class PackageBuilder(object):
             pass
         return object_list
 
-    def render_all_objects(self):
+    def render_all_objects(self, all_objects=None):
         all_rendered_object = []
-        for each_object in self.get_objects():
+        if all_objects is None:
+            all_objects = self.get_objects()
+        for each_object in all_objects:
             all_rendered_object.append(self.render_each_object(each_object))
         return ",\n".join(all_rendered_object)
 

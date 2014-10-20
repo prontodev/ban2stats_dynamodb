@@ -31,6 +31,27 @@ class BlockedIPPackageBuilder(PackageBuilder):
         # output_dict['last_seen'] = self.format_last_seen_string(output_dict['last_seen'])
         return json.dumps(output_dict)
 
+    def render_each_object_as_minimized_version(self, object):
+        template = '''"{latitude}","{longitude}","{geo_location}, {list_of_attack_details_as_string}'''
+        latitude, longitude = object.lat_lon.split(',')
+        data = {'latitude' : latitude, 'longitude': longitude}
+        data['geo_location'] = object.geo_location
+        data['list_of_attack_details_as_string'] = self.render_list_of_attack_details_as_string_as_minimized_version(object)
+        output_string = template.format()
+
+    def render_list_of_attack_details_as_string_as_minimized_version(self, data):
+
+        output_list = map(self.render_each_attack_details_as_minimized_version, data.attack_details)
+        output_string = ",".join(output_list)
+        output_string = "[{0}]".format(output_string)
+        return output_string
+
+    def render_each_attack_details_as_minimized_version(self, each_attack_details):
+        print 'each_attack_details = ', each_attack_details
+        each_attack_details_dict = json.loads(each_attack_details)
+        output_string = '''[{attacker_ip},{service_name},{count},{last_seen}]'''.format(**each_attack_details_dict)
+        return output_string
+
     def objects_count_as_string(self, number):
         return "{:,}".format(number)
 
@@ -40,3 +61,11 @@ class BlockedIPPackageBuilder(PackageBuilder):
         "blocked_ip_count": "{1}"
         """
         return template.format(self.render_all_objects_as_list(), self.objects_count_as_string(len(self.objects)))
+
+    def render_all_objects(self, all_objects=None):
+        all_rendered_object = []
+        if all_objects is None:
+            all_objects = self.get_objects()
+        for each_object in all_objects:
+            all_rendered_object.append(self.render_each_object_as_minimized_version(each_object))
+        return ",\n".join(all_rendered_object)
