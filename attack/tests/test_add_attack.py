@@ -3,39 +3,28 @@ from django.conf import settings
 from attack.models import Attack
 from stats.models import BlockedIP, AttackedService, BlockedCountry
 import time
+import json
 from pynamodb.exceptions import TableDoesNotExist, TableError
 
 
 class TestAttackAdd(SimpleTestCase):
 
     def tearDown(self):
+        BlockedIP.delete_table()
+        BlockedCountry.delete_table()
+        AttackedService.delete_table()
         Attack.delete_table()
-        try:
-            BlockedCountry.delete_table()
-        except TableDoesNotExist:
-            pass
-        except TableError:
-            pass
         time.sleep(settings.TESTING_SLEEP_TIME)
 
     def setUp(self):
-        if Attack.exists():
-            Attack.delete_table()
-            time.sleep(settings.TESTING_SLEEP_TIME)
-        try:
+        if not BlockedIP.exists():
+            BlockedIP.create_table(wait=True)
+        if not BlockedCountry.exists():
+            BlockedCountry.create_table(wait=True)
+        if not AttackedService.exists():
+            AttackedService.create_table(wait=True)
+        if not Attack.exists():
             Attack.create_table(wait=True)
-        except TableDoesNotExist:
-            #It happens when create_table api doesn't finished within `timeout`.
-            print 'Raised TableDoesNotExist'
-            Attack.create_table(wait=True)
-
-        try:
-            BlockedCountry.delete_table()
-        except TableDoesNotExist:
-            pass
-        except TableError:
-            pass
-        time.sleep(settings.TESTING_SLEEP_TIME)
 
         self.request_headers = {'HTTP_TOKEN': 'oTbCmV71i2Lg5wQMSsPEFKGJ0Banana'}
 
@@ -89,30 +78,31 @@ class TestAttackAdd(SimpleTestCase):
             counter += 1
         self.assertEqual(counter, 1)
 
-        blocked_ip_from_db = BlockedIP.query('blocked_ip_72.14.207.99', key='72.14.207.99')
+        blocked_ip_from_db = BlockedIP.scan() #query("37.419200897216797,-122.05740356445312")
         counter = 0
         for item in blocked_ip_from_db:
             counter += 1
-            self.assertEqual(item.category, 'blocked_ip_72.14.207.99')
-            self.assertEqual(item.key, u'72.14.207.99')
-            self.assertEqual(item.count, 1)
+            lat, lon = item.lat_lon.split(',')
+            self.assertAlmostEqual(float(lat), 37.419200897216797)
+            self.assertAlmostEqual(float(lon), -122.05740356445312)
+            attack_details = json.loads(item.attack_details)
+            self.assertEqual(attack_details["72.14.207.99"]["count"], 1)
+
         self.assertEqual(counter, 1)
 
-        attacked_protocol_from_db = AttackedService.query('attacked_service', key='company web server test view')
+        attacked_protocol_from_db = AttackedService.query('company web server test view')
         counter = 0
         for item in attacked_protocol_from_db:
             counter += 1
-            self.assertEqual(item.category, 'attacked_service')
-            self.assertEqual(item.key, 'company web server test view')
+            self.assertEqual(item.service_name, 'company web server test view')
             self.assertEqual(item.count, 1)
         self.assertEqual(counter, 1)
 
-        blocked_country_from_db = BlockedCountry.query('blocked_country', key='US')
+        blocked_country_from_db = BlockedCountry.query('US')
         counter = 0
         for item in blocked_country_from_db:
             counter += 1
-            self.assertEqual(item.category, 'blocked_country')
-            self.assertEqual(item.key, 'US')
+            self.assertEqual(item.country_code, 'US')
             self.assertEqual(item.country_name, 'United States')
             self.assertEqual(item.count, 1)
         self.assertEqual(counter, 1)

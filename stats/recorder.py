@@ -1,4 +1,5 @@
 from stats.models import BlockedIP, AttackedService, BlockedCountry
+from attack.models import Attack
 from django.utils.timezone import get_current_timezone
 from datetime import datetime
 import json
@@ -48,11 +49,13 @@ class StatsRecorder(object):
     def __init__(self, data):
         self.data = data
         self.ip = self.data['attacker_ip']
+        self.is_new_ip = None
 
     def trigger_counter(self, existing_record):
         if existing_record is None or (existing_record==[]): return 1
-        count = existing_record.count + 1
-        return count
+        if self.is_new_ip:
+            count = existing_record.count + 1
+            return count
 
     def all_attribute_matched(self, item, query_data):
         if len(query_data.keys()) == 0:
@@ -73,6 +76,14 @@ class StatsRecorder(object):
                     return item
         except TypeError, err:
             return None
+
+    def check_if_is_new_ip(self):
+        if self.is_new_ip is None:
+            existing_attack = Attack.query(self.ip, Count=True)
+            if existing_attack.count >= 1:
+                self.is_new_ip = True
+            self.is_new_ip = False
+        return self.is_new_ip
 
     def save_blocked_ip_record(self):
         lat_lon_string = "{latitude},{longitude}".format(**self.data)
@@ -96,15 +107,17 @@ class StatsRecorder(object):
     def save_attacked_service_record(self):
         existing_record = self.get_existing_record(AttackedService, self.data['service_name'])
         count = self.trigger_counter(existing_record)
-        self.attacked_service = AttackedService(service_name=self.data['service_name'], count=count)
-        self.attacked_service.save()
-        return self.attacked_service
+        if count is not None:
+            self.attacked_service = AttackedService(service_name=self.data['service_name'], count=count)
+            self.attacked_service.save()
+            return self.attacked_service
 
     def save_blocked_country_record(self):
         existing_record = self.get_existing_record(BlockedCountry, self.data['country'])
         count = self.trigger_counter(existing_record)
-        self.blocked_country = BlockedCountry(country_code=self.data['country'],
-                                              country_name=self.data['country_name'],
-                                              count=count)
-        self.blocked_country.save()
-        return self.blocked_country
+        if count is not None:
+            self.blocked_country = BlockedCountry(country_code=self.data['country'],
+                                                  country_name=self.data['country_name'],
+                                                  count=count)
+            self.blocked_country.save()
+            return self.blocked_country

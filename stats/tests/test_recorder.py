@@ -4,6 +4,7 @@ import time
 import json
 from stats.recorder import StatsRecorder
 from stats.models import BlockedIP, AttackedService, BlockedCountry
+from attack.models import Attack
 
 
 class TestStatsRecorder(SimpleTestCase):
@@ -37,12 +38,23 @@ class TestStatsRecorder(SimpleTestCase):
         )
         self.recorder2 = StatsRecorder(self.attack_data2)
 
+        if not BlockedIP.exists():
+            BlockedIP.create_table(wait=True)
+        if not BlockedCountry.exists():
+            BlockedCountry.create_table(wait=True)
+        if not AttackedService.exists():
+            AttackedService.create_table(wait=True)
+        if not Attack.exists():
+            Attack.create_table(wait=True)
+
     def tearDown(self):
+        BlockedIP.delete_table()
+        BlockedCountry.delete_table()
+        AttackedService.delete_table()
+        Attack.delete_table()
         time.sleep(settings.TESTING_SLEEP_TIME)
 
     def test_save_banned_ip_success(self):
-        if not BlockedIP.exists():
-            BlockedIP.create_table(wait=True)
 
         banned_ip_record = self.recorder.save_blocked_ip_record()
         self.assertEqual(banned_ip_record.lat_lon, '222.33333,111.333333')
@@ -72,26 +84,26 @@ class TestStatsRecorder(SimpleTestCase):
         BlockedIP.delete_table()
 
     def test_save_attacked_service_success(self):
-        if not AttackedService.exists():
-            AttackedService.create_table(wait=True)
 
         attacked_protocol_record = self.recorder.save_attacked_service_record()
         self.assertEqual(attacked_protocol_record.service_name, 'Company Wordpress System')
         self.assertEqual(attacked_protocol_record.count, 1)
 
         attacked_protocol_record_2 = self.recorder.save_attacked_service_record()
-        self.assertEqual(attacked_protocol_record_2.service_name, 'Company Wordpress System')
-        self.assertEqual(attacked_protocol_record_2.count, 2)
+        self.assertEqual(attacked_protocol_record_2, None)
+        attacked_protocol_record_for_testing = AttackedService.query('Company Wordpress System')
+        counter = 0
+        for item in attacked_protocol_record_for_testing:
+            counter += 1
+            self.assertEqual(item.count, 1)
+        self.assertEqual(counter, 1)
+
 
         attacked_protocol_record_3 = self.recorder2.save_attacked_service_record()
         self.assertEqual(attacked_protocol_record_3.service_name, 'Back office service')
         self.assertEqual(attacked_protocol_record_3.count, 1)
 
-        AttackedService.delete_table()
-
     def test_save_blocked_country_success(self):
-        if not BlockedCountry.exists():
-            BlockedCountry.create_table(wait=True)
 
         blocked_country_record = self.recorder.save_blocked_country_record()
         self.assertEqual(blocked_country_record.country_code, 'TH')
@@ -103,5 +115,3 @@ class TestStatsRecorder(SimpleTestCase):
         self.assertEqual(blocked_country_record2.country_code, 'RU')
         self.assertEqual(blocked_country_record2.country_name, 'Russia')
         self.assertEqual(blocked_country_record2.count, 1)
-
-        BlockedCountry.delete_table()
