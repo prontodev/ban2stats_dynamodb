@@ -1,7 +1,7 @@
 from django.test import SimpleTestCase
 from django.conf import settings
 from stats.views import AttackedServicePackageBuilder
-from stats.models import AttackedService
+from stats.packages.attacked_service import AttackedService
 import time
 
 

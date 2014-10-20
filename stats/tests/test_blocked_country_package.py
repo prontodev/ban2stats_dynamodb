@@ -1,7 +1,7 @@
 from django.test import SimpleTestCase
 from django.conf import settings
 from stats.models import BlockedCountry
-from stats.views import BlockedCountryPackageBuilder
+from stats.packages.blocked_country import BlockedCountryPackageBuilder
 import time
 
 

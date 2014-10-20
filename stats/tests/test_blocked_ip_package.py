@@ -1,7 +1,7 @@
 from django.test import SimpleTestCase
 from django.conf import settings
 from stats.models import BlockedIP
-from stats.views import BlockedIPPackageBuilder
+from stats.packages.blocked_ip import BlockedIPPackageBuilder
 import time
 
 
