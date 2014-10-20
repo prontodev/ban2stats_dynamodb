@@ -22,15 +22,19 @@ class TestBlockedIPPackageMinimized(TestBlockedIPPackageBase):
         self.assertEqual(content, expected_content)
 
     def test_render_all_attack_details(self):
-        all_attack_details = '''[{"ip":"127.0.0.1","service_name":"Company Wordpress System","protocol":"http","port":"80","count":1000,"last_seen":"2014-09-27T08:49:28.556775+0000"},
-        {"ip":"127.0.0.2","service_name":"HR Portal","protocol":"http","port":"80","count":888,"last_seen":"2014-08-07T08:49:28.556775+0000"}
-        ]'''
+        all_attack_details = '''{"127.0.0.1": {"service_name":"Company Wordpress System","protocol":"http","port":"80","count":1000,"last_seen":"2014-09-27T08:49:28.556775+0000"},
+        "127.0.0.2":{"service_name":"HR Portal","protocol":"http","port":"80","count":888,"last_seen":"2014-08-07T08:49:28.556775+0000"}
+        }'''
         content = self.builder.render_all_attack_details(all_attack_details)
-        expected_content = '''[["127.0.0.1","Company Wordpress System",1000,"2014-09-27T08:49:28.556775+0000"],["127.0.0.2","HR Portal",888,"2014-08-07T08:49:28.556775+0000"]]'''
-        self.assertEqual(content, expected_content)
+        expected_content = '''["127.0.0.2","HR Portal",888,"2014-08-07T08:49:28.556775+0000"]'''
+        self.assertTrue(expected_content in content)
+        expected_content = '''["127.0.0.1","Company Wordpress System",1000,"2014-09-27T08:49:28.556775+0000"]'''
+        self.assertTrue(expected_content in content)
+        self.assertEqual(content[0:2], "[[")
+        self.assertEqual(content[-2:], "]]")
 
     def test_render_each_attack_detail(self):
-        each_attack_details = json.loads('''{"ip":"127.0.0.1","service_name":"Company Wordpress System","protocol":"http","port":"80","count":18,"last_seen":"2014-09-27T08:49:28.556775+0000"}''')
+        each_attack_details = {"ip":"127.0.0.1","service_name":"Company Wordpress System","protocol":"http","port":"80","count":18,"last_seen":"2014-09-27T08:49:28.556775+0000"}
         content = self.builder.render_each_attack_details(each_attack_details)
         expected_string = '''["127.0.0.1","Company Wordpress System",18,"2014-09-27T08:49:28.556775+0000"]'''
         self.assertEqual(content, expected_string)

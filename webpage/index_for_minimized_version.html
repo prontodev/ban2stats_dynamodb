@@ -163,14 +163,16 @@
             })
         }
         function build_info_window(marker, blocked_ip_data){
-            var html = blocked_ip_data.geo_location + "<br/>" ;
+            console.log( '*' + blocked_ip_data[2])
+            var html = blocked_ip_data[2] + "<br/>" ;
 
-            $.each(blocked_ip_data.attack_details, function(index, each_attack){
-                html += "<b>"+each_attack.service_name + " Attack</b>" +
-                    "<br />Last seen: " + each_attack.last_seen +
-                    "<br/> Ban count: " + each_attack.count +
+            $.each(blocked_ip_data[3], function(index, each_attack){
+                html += "<b>"+each_attack[1] + " Attack</b>" +
+                    "<br />Last seen: " + each_attack[3] +
+                    "<br/> Ban count: " + each_attack[2] +
 
-                    "<br/> " + each_attack.ip + "<br/>";
+                    "<br/> " + each_attack[0] + "<br/>";
+
                 });
 
             var infowindow = new google.maps.InfoWindow({
@@ -193,10 +195,13 @@
 
         function render_blocked_ips(){
             $.each(blocked_ips, function(index, each_pin) {
-              var latLng = new google.maps.LatLng(each_pin.latitude, each_pin.longitude);
-              var marker = new google.maps.Marker({position: latLng});
-              markers.push(marker);
-              build_info_window(marker, each_pin);
+                $.each(each_pin, function(index2, each_ip){
+                    var latLng = new google.maps.LatLng(each_pin[0], each_pin[1]);
+                    var marker = new google.maps.Marker({position: latLng});
+                    markers.push(marker);
+                    build_info_window(marker, each_pin);
+                });
+
             });
             var markerCluster = new MarkerClusterer(map, markers, markerClusterOptions);
         }

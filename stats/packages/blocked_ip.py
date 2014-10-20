@@ -61,11 +61,3 @@ class BlockedIPPackageBuilder(PackageBuilder):
         "blocked_ip_count": "{1}"
         """
         return template.format(self.render_all_objects_as_list(), self.objects_count_as_string(len(self.objects)))
-
-    def render_all_objects(self, all_objects=None):
-        all_rendered_object = []
-        if all_objects is None:
-            all_objects = self.get_objects()
-        for each_object in all_objects:
-            all_rendered_object.append(self.render_each_object_as_minimized_version(each_object))
-        return ",\n".join(all_rendered_object)
