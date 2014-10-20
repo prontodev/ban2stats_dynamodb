@@ -5,7 +5,6 @@ import time
 from stats.tests.test_blocked_ip_package_base import TestBlockedIPPackageBase
 
 
-
 class TestBlockedIPPackageMinimized(TestBlockedIPPackageBase):
 
     def test_get_objects(self):
