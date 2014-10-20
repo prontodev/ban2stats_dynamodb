@@ -163,11 +163,15 @@
             })
         }
         function build_info_window(marker, blocked_ip_data){
-            var html = "<b>"+blocked_ip_data.service_name + " Attack</b>";
-            html += "<br />Last seen: " + blocked_ip_data.last_seen +
-                    "<br/> Ban count: " + blocked_ip_data.count +
-                    "<br/> " + blocked_ip_data.geo_location +
-                    "<br/> " + blocked_ip_data.blocked_ip;
+            var html = ""
+            $.each(blocked_ip_data.attack_details, function(each_attack){
+            html += "<b>"+each_attack.service_name + " Attack</b>" +
+                    "<br />Last seen: " + each_attack.last_seen +
+                    "<br/> Ban count: " + each_attack.count +
+                    "<br/> " + each_attack.geo_location +
+                    "<br/> " + each_attack.ip + "<br/>";
+                });
+
             var infowindow = new google.maps.InfoWindow({
               content: html
             });
@@ -187,16 +191,16 @@
         var oldinfowindow=null;
 
         function render_blocked_ips(){
-            $.each(blocked_ips, function(index, blocked_ip) {
-              var latLng = new google.maps.LatLng(blocked_ip.latitude, blocked_ip.longitude);
+            $.each(blocked_ips, function(index, each_pin) {
+              var latLng = new google.maps.LatLng(each_pin.latitude, each_pin.longitude);
               var marker = new google.maps.Marker({position: latLng});
               markers.push(marker);
-              build_info_window(marker, blocked_ip);
+              build_info_window(marker, each_pin);
             });
             var markerCluster = new MarkerClusterer(map, markers, markerClusterOptions);
         }
         function initialize() {
-            $.getJSON( "http://172.19.30.27:8002/stats/", function( data ) {
+            $.getJSON( "/stats_data.js", function( data ) {
               blocked_ip_count = data.blocked_ip_count;
               blocked_countries = data.blocked_countries;
               blocked_ips = data.blocked_ips;
