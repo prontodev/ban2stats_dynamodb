@@ -7,16 +7,6 @@ from pynamodb.exceptions import TableDoesNotExist
 from django.conf import settings
 
 
-class AttackForTesting(Attack):
-
-    class Meta:
-        read_capacity_units = 1
-        write_capacity_units = 1
-        table_name = 'AttackTest'
-        region = 'ap-southeast-1'
-        host = settings.DYNAMODB_HOST
-
-
 class TestModel(SimpleTestCase):
 
     def tearDown(self):
@@ -26,13 +16,13 @@ class TestModel(SimpleTestCase):
         now_timestamp = datetime.now(tz=get_current_timezone())
 
         try:
-            AttackForTesting.create_table(wait=True)
+            Attack.create_table(wait=True)
         except TableDoesNotExist:
             #It happens when create_table api doesn't finished within `timeout`.
             print 'Raised TableDoesNotExist'
-            AttackForTesting.create_table(wait=True)
+            Attack.create_table(wait=True)
 
-        attack = AttackForTesting(attacker_ip='127.0.0.1',
+        attack = Attack(attacker_ip='127.0.0.1',
                         service_name='company web server',
                         protocol='http',
                         port='80',
@@ -43,10 +33,10 @@ class TestModel(SimpleTestCase):
                         geo_location='Bangkok, Thailand',
                         timestamp=now_timestamp)
         attack.save()
-        AttackForTesting.delete_table()
+        Attack.delete_table()
 
     def test_save_attack_fail(self):
-        AttackForTesting.create_table(wait=True)
-        attack = AttackForTesting()
+        Attack.create_table(wait=True)
+        attack = Attack()
         self.assertRaisesMessage(ValueError, "Attribute 'attacker_ip' cannot be None", attack.save)
-        AttackForTesting.delete_table()
+        Attack.delete_table()
