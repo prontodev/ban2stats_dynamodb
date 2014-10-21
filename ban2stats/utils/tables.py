@@ -10,7 +10,14 @@ def create_all():
         BlockedIP.create_table(wait=True)
 
     if not BlockedCountry.exists():
-        BlockedCountry.create_table()
+        BlockedCountry.create_table(wait=True)
 
     if not AttackedService.exists():
-        AttackedService.create_table()
+        AttackedService.create_table(wait=True)
+
+
+def delete_all():
+    Attack.delete_table()
+    BlockedIP.delete_table()
+    BlockedCountry.delete_table()
+    AttackedService.delete_table()
