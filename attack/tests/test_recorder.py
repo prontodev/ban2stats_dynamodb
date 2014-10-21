@@ -1,14 +1,8 @@
 from attack.recorder import AttackRecorder
-from attack.tests.test_models import AttackForTesting
+from attack.models import Attack
 from django.test import SimpleTestCase
 from django.conf import settings
 import time
-
-
-class FakeAttackRecorder(AttackRecorder):
-
-    def __init__(self, model=AttackForTesting):
-        super(FakeAttackRecorder, self).__init__(model=model)
 
 
 class TestAttackRecord(SimpleTestCase):
@@ -18,7 +12,7 @@ class TestAttackRecord(SimpleTestCase):
         time.sleep(settings.TESTING_SLEEP_TIME)
 
     def setUp(self):
-        self.attack_recorder = AttackRecorder(model=AttackForTesting)
+        self.attack_recorder = AttackRecorder()
 
     def test_get_geo_data(self):
         ip = '72.14.207.99'

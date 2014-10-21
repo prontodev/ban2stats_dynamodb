@@ -24,35 +24,35 @@ for i in range(2,220):
     ip = '114.{0}.19.3'.format(i)
     attack(ip, 'Company Portal')
 
-for i in range(33, 80):
-    ip = '114.48.19.{0}'.format(i)
-    attack(ip, 'Human Resource Control Portal')
-
-for i in range(20, 233):
-    ip = '114.48.20.{0}'.format( i)
-    attack(ip, 'Financial Department Portal')
-for i in range(40, 233):
-    ip = '114.48.20.{0}'.format( i)
-    attack(ip, 'Financial Department Portal')
-for i in range(83, 133):
-    ip = '114.48.20.{0}'.format( i)
-    attack(ip, 'Financial Department Portal')
-for i in range(12, 140):
-    ip = '114.109.188.{0}'.format( i)
-    attack(ip, 'Financial Department Portal')
-for i in range(32, 109):
-    ip = '72.14.20.{0}'.format( i)
-    attack(ip, 'Financial Department Portal')
-for i in range(2, 179):
-    ip = '72.14.12.{0}'.format( i)
-    attack(ip, 'Human Resource Control Portal')
-
-for i in range(12, 240):
-    ip = '114.109.{0}.4'.format( i)
-    attack(ip, 'Financial Department Portal')
-for i in range(32, 109):
-    ip = '72.90.20.{0}'.format( i)
-    attack(ip, 'Financial Department Portal')
-for i in range(2, 179):
-    ip = '72.14.1.{0}'.format(i)
-    attack(ip, 'Human Resource Control Portal')
+# for i in range(33, 80):
+#     ip = '114.48.19.{0}'.format(i)
+#     attack(ip, 'Human Resource Control Portal')
+#
+# for i in range(20, 233):
+#     ip = '114.48.20.{0}'.format( i)
+#     attack(ip, 'Financial Department Portal')
+# for i in range(40, 233):
+#     ip = '114.48.20.{0}'.format( i)
+#     attack(ip, 'Financial Department Portal')
+# for i in range(83, 133):
+#     ip = '114.48.20.{0}'.format( i)
+#     attack(ip, 'Financial Department Portal')
+# for i in range(12, 140):
+#     ip = '114.109.188.{0}'.format( i)
+#     attack(ip, 'Financial Department Portal')
+# for i in range(32, 109):
+#     ip = '72.14.20.{0}'.format( i)
+#     attack(ip, 'Financial Department Portal')
+# for i in range(2, 179):
+#     ip = '72.14.12.{0}'.format( i)
+#     attack(ip, 'Human Resource Control Portal')
+#
+# for i in range(12, 240):
+#     ip = '114.109.{0}.4'.format( i)
+#     attack(ip, 'Financial Department Portal')
+# for i in range(32, 109):
+#     ip = '72.90.20.{0}'.format( i)
+#     attack(ip, 'Financial Department Portal')
+# for i in range(2, 179):
+#     ip = '72.14.1.{0}'.format(i)
+#     attack(ip, 'Human Resource Control Portal')

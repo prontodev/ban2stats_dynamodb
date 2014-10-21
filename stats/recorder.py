@@ -1,6 +1,8 @@
 from stats.models import BlockedIP, AttackedService, BlockedCountry
 from attack.models import Attack
+from pynamodb.connection import Connection
 from django.utils.timezone import get_current_timezone
+from django.conf import settings
 from datetime import datetime
 import json
 
@@ -49,13 +51,17 @@ class StatsRecorder(object):
     def __init__(self, data):
         self.data = data
         self.ip = self.data['attacker_ip']
-        self.is_new_ip = None
+        self.connection = Connection(host=settings.DYNAMODB_HOST, region=settings.DYNAMODB_REGION)
+        self.is_new_ip = self.check_new_ip()
 
     def trigger_counter(self, existing_record):
-        if existing_record is None or (existing_record==[]): return 1
-        if self.is_new_ip:
+        if self.check_if_is_new_ip():
+            if existing_record is None or (existing_record==[]):
+                return 1
             count = existing_record.count + 1
             return count
+        else:
+            return existing_record.count
 
     def all_attribute_matched(self, item, query_data):
         if len(query_data.keys()) == 0:
@@ -72,18 +78,13 @@ class StatsRecorder(object):
         existing_blocked_ip = model.query(hash_key, **query_data)
         try:
             for item in existing_blocked_ip:
+                if query_data == {}:
+                    return item
                 if self.all_attribute_matched(item, query_data):
                     return item
+
         except TypeError, err:
             return None
-
-    def check_if_is_new_ip(self):
-        if self.is_new_ip is None:
-            existing_attack = Attack.query(self.ip, Count=True)
-            if existing_attack.count >= 1:
-                self.is_new_ip = True
-            self.is_new_ip = False
-        return self.is_new_ip
 
     def save_blocked_ip_record(self):
         lat_lon_string = "{latitude},{longitude}".format(**self.data)
@@ -105,19 +106,41 @@ class StatsRecorder(object):
         return self.blocked_ip
 
     def save_attacked_service_record(self):
-        existing_record = self.get_existing_record(AttackedService, self.data['service_name'])
-        count = self.trigger_counter(existing_record)
-        if count is not None:
-            self.attacked_service = AttackedService(service_name=self.data['service_name'], count=count)
+        existing_record_response_dict = self.connection.query(settings.STATS_ATTACKED_SERVICE_TABLE_NAME, self.data['service_name'])
+        if existing_record_response_dict['Count'] == 0:
+            self.attacked_service = AttackedService(service_name=self.data['service_name'], count=1)
             self.attacked_service.save()
             return self.attacked_service
+        else:
+            existing_record = existing_record_response_dict['Items'][0]
+            if self.is_new_ip:
+                new_count = int(existing_record['count']['N']) + 1
+                new_data = existing_record.copy()
+                new_data['count']['N'] = unicode(new_count)
+                self.connection.put_item(settings.STATS_ATTACKED_SERVICE_TABLE_NAME, self.data['service_name'],
+                                     attributes=new_data)
+
+    def check_new_ip(self):
+        existing_attack_response_dict = self.connection.query(settings.ATTACK_TABLE_NAME, self.ip)
+        if existing_attack_response_dict['Count'] == 0:
+            return True
+        else:
+            return False
 
     def save_blocked_country_record(self):
-        existing_record = self.get_existing_record(BlockedCountry, self.data['country'])
-        count = self.trigger_counter(existing_record)
-        if count is not None:
+        existing_record_response_dict = self.connection.query(settings.STATS_BLOCKED_COUNTRY_TABLE_NAME, self.data['country'])
+        if existing_record_response_dict['Count'] == 0:
             self.blocked_country = BlockedCountry(country_code=self.data['country'],
-                                                  country_name=self.data['country_name'],
-                                                  count=count)
+                                              country_name=self.data['country_name'],
+                                              count=1)
             self.blocked_country.save()
             return self.blocked_country
+        else:
+            existing_record = existing_record_response_dict['Items'][0]
+            if self.is_new_ip:
+                new_count = int(existing_record['count']['N']) + 1
+                new_data = existing_record.copy()
+                new_data['count']['N'] = unicode(new_count)
+                self.connection.put_item(settings.STATS_BLOCKED_COUNTRY_TABLE_NAME, self.data['country'],
+                                     attributes=new_data)
+

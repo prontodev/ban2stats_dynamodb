@@ -48,8 +48,7 @@ class BlockedCountry(Model):
     country_code = UnicodeAttribute(hash_key=True)
 
     country_name = UnicodeAttribute()
-    count_index = CountIndex()
-    count = NumberAttribute(default=0, range_key=True)
+    count = NumberAttribute(default=0)
 
     class Meta:
         read_capacity_units = settings.DYNAMO_MODEL_READ_CAPACITY_UNITS

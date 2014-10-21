@@ -167,10 +167,11 @@
 
             $.each(blocked_ip_data[3], function(index, each_attack){
                 html += "<b>"+each_attack[1] + " Attack</b>" +
-                    "<br />Last seen: " + each_attack[3] +
-                    "<br/> Ban count: " + each_attack[2] +
+                    "<br/> " + each_attack[0] +
+                    "<br/>Last seen: " + each_attack[3] +
+                    "<br/> Ban count: " + each_attack[2] + "<br/>" ;
 
-                    "<br/> " + each_attack[0] + "<br/>";
+
 
                 });
 
@@ -195,7 +196,7 @@
         function render_blocked_ips(){
             var ip_counter = 0;
             $.each(blocked_ips, function(index, each_pin) {
-                $.each(each_pin, function(index2, each_ip){
+                $.each(each_pin[3], function(index2, each_ip){
                     ip_counter = ip_counter + 1;
                     var latLng = new google.maps.LatLng(each_pin[0], each_pin[1]);
                     var marker = new google.maps.Marker({position: latLng});
@@ -204,7 +205,7 @@
                 });
 
             });
-            blocked_ip_count = ip_counter
+            blocked_ip_count = ip_counter;
             $("#blocked-ip-count").html(blocked_ip_count);
             var markerCluster = new MarkerClusterer(map, markers, markerClusterOptions);
         }

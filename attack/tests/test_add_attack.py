@@ -4,7 +4,7 @@ from attack.models import Attack
 from stats.models import BlockedIP, AttackedService, BlockedCountry
 import time
 import json
-from pynamodb.exceptions import TableDoesNotExist, TableError
+from pynamodb.exceptions import TableDoesNotExist
 
 
 class TestAttackAdd(SimpleTestCase):
@@ -89,6 +89,70 @@ class TestAttackAdd(SimpleTestCase):
             self.assertEqual(attack_details["72.14.207.99"]["count"], 1)
 
         self.assertEqual(counter, 1)
+
+        attacked_protocol_from_db = AttackedService.query('company web server test view')
+        counter = 0
+        for item in attacked_protocol_from_db:
+            counter += 1
+            self.assertEqual(item.service_name, 'company web server test view')
+            self.assertEqual(item.count, 1)
+        self.assertEqual(counter, 1)
+
+        blocked_country_from_db = BlockedCountry.query('US')
+        counter = 0
+        for item in blocked_country_from_db:
+            counter += 1
+            self.assertEqual(item.country_code, 'US')
+            self.assertEqual(item.country_name, 'United States')
+            self.assertEqual(item.count, 1)
+        self.assertEqual(counter, 1)
+
+        self.assertContains(response, 'Added attack')
+
+    def test_add_two_distinct_location(self):
+        self.reset_stats()
+        fail2ban_data = dict(
+            attacker_ip='72.14.207.99',
+            service_name='company web server test view',
+            protocol='http',
+            port='81',
+        )
+        response = self.client.post('/attack/new/', data=fail2ban_data, **self.request_headers)
+
+        fail2ban_data = dict(
+            attacker_ip='114.109.35.4',
+            service_name='HR Portal',
+            protocol='http',
+            port='9090',
+        )
+        response2 = self.client.post('/attack/new/', data=fail2ban_data, **self.request_headers)
+        time.sleep(2)
+
+        attacks_from_db = Attack.query('72.14.207.99', port='81')
+        counter = 0
+        for item in attacks_from_db:
+            self.assertEqual(item.service_name, 'company web server test view')
+            self.assertEqual(item.port, '81')
+            counter += 1
+        self.assertEqual(counter, 1)
+
+        blocked_ip_from_db = BlockedIP.scan()#query("37.419200897216797,-122.05740356445312")
+        counter = 0
+        ip_starts_with_72 = None
+        ip_starts_with_114 = None
+        for item in blocked_ip_from_db:
+            if item.lat_lon.startswith('37'):
+                ip_starts_with_72 = item
+            else:
+                ip_starts_with_114 = item
+            counter += 1
+        self.assertEqual(counter, 2)
+        lat, lon = ip_starts_with_72.lat_lon.split(',')
+        self.assertAlmostEqual(float(lat), 37.419200897216797)
+        self.assertAlmostEqual(float(lon), -122.05740356445312)
+        attack_details = json.loads(ip_starts_with_72.attack_details)
+        self.assertEqual(attack_details["72.14.207.99"]["count"], 1)
+
 
         attacked_protocol_from_db = AttackedService.query('company web server test view')
         counter = 0
