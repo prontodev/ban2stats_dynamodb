@@ -3,21 +3,14 @@ from django.conf import settings
 import time
 import json
 from stats.recorder import StatsRecorder
-from stats.models import BlockedIP, AttackedService, BlockedCountry
-from attack.models import Attack
+from ban2stats.utils.tables import create_all, delete_all
+from stats.models import BlockedIP
 
 
 class TestStatsRecorder(SimpleTestCase):
 
     def setUp(self):
-        if not BlockedIP.exists():
-            BlockedIP.create_table(wait=True)
-        if not BlockedCountry.exists():
-            BlockedCountry.create_table(wait=True)
-        if not AttackedService.exists():
-            AttackedService.create_table(wait=True)
-        if not Attack.exists():
-            Attack.create_table(wait=True)
+        create_all()
 
         self.attack_data = dict(
             attacker_ip='127.0.0.1',
@@ -76,10 +69,7 @@ class TestStatsRecorder(SimpleTestCase):
         self.recorder4 = StatsRecorder(self.attack_data3)
 
     def tearDown(self):
-        BlockedIP.delete_table()
-        BlockedCountry.delete_table()
-        AttackedService.delete_table()
-        Attack.delete_table()
+        delete_all()
         time.sleep(settings.TESTING_SLEEP_TIME)
 
     def test_save_banned_ip_success(self):

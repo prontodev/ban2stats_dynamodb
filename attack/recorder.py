@@ -6,11 +6,7 @@ from datetime import datetime
 
 class AttackRecorder(object):
 
-    def __init__(self, model=Attack):
-        self.model = model
-        if not self.model.exists():
-            self.model.create_table(wait=True)
-
+    def __init__(self):
         self.geo_details = None
         self.data = {}
 
@@ -44,9 +40,9 @@ class AttackRecorder(object):
         self.data['timestamp'] = now_timestamp
 
     def save(self):
-        attack = self.model(**self.data)
+        attack = Attack(**self.data)
         attack.save()
         return attack
 
     def delete_table(self):
-        self.model.delete_table()
+        Attack.delete_table()

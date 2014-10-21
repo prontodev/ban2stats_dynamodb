@@ -1,5 +1,6 @@
 from attack.recorder import AttackRecorder
 from attack.models import Attack
+from ban2stats.utils.tables import create_all, delete_all
 from django.test import SimpleTestCase
 from django.conf import settings
 import time
@@ -8,10 +9,11 @@ import time
 class TestAttackRecord(SimpleTestCase):
 
     def tearDown(self):
-        self.attack_recorder.delete_table()
+        delete_all()
         time.sleep(settings.TESTING_SLEEP_TIME)
 
     def setUp(self):
+        create_all()
         self.attack_recorder = AttackRecorder()
 
     def test_get_geo_data(self):
@@ -38,7 +40,7 @@ class TestAttackRecord(SimpleTestCase):
         self.attack_recorder.record_timestamp()
         self.attack_recorder.save()
 
-        attacks_from_db = self.attack_recorder.model.query('72.14.207.99', timestamp=self.attack_recorder.data['timestamp'])
+        attacks_from_db = Attack.query('72.14.207.99', timestamp=self.attack_recorder.data['timestamp'])
         counter = 0
         for item in attacks_from_db:
             self.assertEqual(item.service_name, 'company web server')

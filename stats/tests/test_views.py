@@ -1,26 +1,18 @@
 from django.test import SimpleTestCase
 from django.conf import settings
 from stats.models import AttackedService, BlockedIP, BlockedCountry
+from ban2stats.utils.tables import create_all, delete_all
 import time
 
 
 class TestGetStatsViews(SimpleTestCase):
 
     def setUp(self):
-        if not AttackedService.exists():
-            AttackedService.create_table(wait=True)
-            time.sleep(settings.TESTING_SLEEP_TIME)
-        if not BlockedIP.exists():
-            BlockedIP.create_table(wait=True)
-            time.sleep(settings.TESTING_SLEEP_TIME)
-        if not BlockedCountry.exists():
-            BlockedCountry.create_table(wait=True)
-            time.sleep(settings.TESTING_SLEEP_TIME)
+        create_all()
+        time.sleep(settings.TESTING_SLEEP_TIME)
 
     def tearDown(self):
-        BlockedIP.delete_table()
-        AttackedService.delete_table()
-        BlockedCountry.delete_table()
+        delete_all()
         time.sleep(settings.TESTING_SLEEP_TIME)
 
     def test_view__no_data(self):
