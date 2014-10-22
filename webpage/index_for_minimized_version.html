@@ -210,11 +210,6 @@
             var markerCluster = new MarkerClusterer(map, markers, markerClusterOptions);
         }
         function initialize() {
-            $.getJSON( "http://localhost:8000/stats/blocked_ips/", function( data ) {
-              blocked_ips = data;
-              render_blocked_ips(data);
-
-            });
             $.getJSON( "http://localhost:8000/stats/blocked_countries/", function( data ) {
               blocked_countries = data;
               render_blocked_countries(blocked_countries);
@@ -223,7 +218,11 @@
               attacked_services = data;
               render_attacked_services_diagram(attacked_services);
             });
+            $.getJSON( "http://localhost:8000/stats/blocked_ips/", function( data ) {
+              blocked_ips = data;
+              render_blocked_ips(data);
 
+            });
             var center = new google.maps.LatLng(25,0);
             map = new google.maps.Map(document.getElementById('map'), {
               zoom: 2,
