@@ -88,21 +88,29 @@ class StatsRecorder(object):
 
     def save_blocked_ip_record(self):
         lat_lon_string = "{latitude},{longitude}".format(**self.data)
-        existing_record = self.get_existing_record(BlockedIP, lat_lon_string)
+        existing_record_response_dict = self.connection.query(settings.STATS_BLOCKED_IP_TABLE_NAME, lat_lon_string)
 
-        if existing_record:
-            existing_attack_details = existing_record.attack_details
-        else:
+        if existing_record_response_dict['Count'] == 0:
             existing_attack_details = None
+        else:
+            existing_attack_details = existing_record_response_dict['Items'][0]['attack_details']['S']
         new_attack_details = AttackDetailsRecorder(existing_attack_details).update_attack_record(self.data)
 
-        self.blocked_ip = BlockedIP(
+        # self.blocked_ip = BlockedIP(
+        #     lat_lon=lat_lon_string,
+        #     attack_details=new_attack_details,
+        #     country=self.data['country'],
+        #     geo_location=self.data['geo_location'],
+        # )
+        # self.blocked_ip.save()
+        new_data = dict(
             lat_lon=lat_lon_string,
             attack_details=new_attack_details,
             country=self.data['country'],
             geo_location=self.data['geo_location'],
         )
-        self.blocked_ip.save()
+        self.connection.put_item(settings.STATS_BLOCKED_IP_TABLE_NAME, lat_lon_string,
+                                     attributes=new_data)
         return self.blocked_ip
 
     def save_attacked_service_record(self):
