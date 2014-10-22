@@ -104,10 +104,11 @@ class StatsRecorder(object):
         # )
         # self.blocked_ip.save()
         new_data = dict(
-            attack_details=new_attack_details,
-            country=self.data['country'],
-            geo_location=self.data['geo_location'],
+            attack_details={'S': new_attack_details},
+            country={'S': self.data['country']},
+            geo_location={'S': self.data['geo_location']},
         )
+        self.connection.update_item()
         self.connection.put_item(settings.STATS_BLOCKED_IP_TABLE_NAME, lat_lon_string,
                                      attributes=new_data)
         return self.blocked_ip
