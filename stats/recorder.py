@@ -104,7 +104,6 @@ class StatsRecorder(object):
         # )
         # self.blocked_ip.save()
         new_data = dict(
-            lat_lon=lat_lon_string,
             attack_details=new_attack_details,
             country=self.data['country'],
             geo_location=self.data['geo_location'],
