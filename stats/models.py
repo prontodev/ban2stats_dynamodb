@@ -32,18 +32,6 @@ class AttackedService(Model):
         host = settings.DYNAMODB_HOST
 
 
-class CountIndex(LocalSecondaryIndex):
-
-    class Meta:
-        projection = AllProjection()
-        index_name = "count_index"
-        region = settings.DYNAMODB_REGION
-        host = settings.DYNAMODB_HOST
-
-    country_code = UnicodeAttribute(hash_key=True)
-    count = NumberAttribute(range_key=True)
-
-
 class BlockedCountry(Model):
     country_code = UnicodeAttribute(hash_key=True)
 
