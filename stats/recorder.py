@@ -108,10 +108,8 @@ class StatsRecorder(object):
             country={'S': self.data['country']},
             geo_location={'S': self.data['geo_location']},
         )
-        self.connection.update_item()
         self.connection.put_item(settings.STATS_BLOCKED_IP_TABLE_NAME, lat_lon_string,
                                      attributes=new_data)
-        return self.blocked_ip
 
     def save_attacked_service_record(self):
         existing_record_response_dict = self.connection.query(settings.STATS_ATTACKED_SERVICE_TABLE_NAME, self.data['service_name'])
